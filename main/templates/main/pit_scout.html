@@ -1,0 +1,490 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pit Scout</title>
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#00ffff">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .fade-in {
+            opacity: 0; 
+            transition: opacity 500ms ease-in;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Impact, sans-serif;
+            background-color: cyan;
+            color: black;
+            position: relative;
+            padding: 20px;
+        }
+        .title {
+            font-size: clamp(32px, 8vw, 48px);
+            margin-top: 20px;
+            text-align: center;
+        }
+        .home-button {
+            font-family: Impact, sans-serif;
+            font-size: clamp(20px, 6vw, 28px);
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            white-space: nowrap;
+            padding: 10px 20px;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        .home-button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        @media screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transition: opacity 500ms ease-in; 
+        }
+
+        .chassis-container, .gear-ratio-container, .vision-container, .hang-container, .reef-capability-container, .confidence-container, .experience-container, .intake-container, .mechanism-container {
+            border: 2px solid black;
+            padding: 5px;
+            width: 400px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .chassis-container h3, .gear-ratio-container h3, .vision-container h3, .hang-container h3, .reef-capability-container h3, .confidence-container h3, .experience-container h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            margin-right: 10px;
+        }
+
+        .radio-button label, .gear-ratio-label {
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .radio-button {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            font-size: 18px;
+        }
+
+        .radio-button input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+        }
+
+        .gear-ratio-input, .experience-input {
+            margin: 0 10px;
+            width: 60px;
+        }
+
+        .vision-container, .hang-container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .vision-container {
+            margin-bottom: 40px;
+        }
+
+        .reef-capability-container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .reef-capability-options {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .reef-capability-option {
+            width: 50%;
+            display: flex;
+            align-items: center;
+        }
+
+        .vision-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .vision-options {
+            display: flex;
+            margin-left: 10px;
+        }
+
+        .hang-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .hang-options {
+            display: flex;
+            margin-left: 10px;
+        }
+
+        .info-container {
+            border: 2px solid black; 
+            padding: 20px; 
+            width: 600px;
+            margin: 20px auto; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start;
+            box-sizing: border-box; 
+        }
+
+        .info-container h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .info-input {
+            margin: 5px 0; 
+            width: 100%; 
+            padding: 10px; 
+            font-size: 16px;
+            box-sizing: border-box; 
+            background-color: #f0f0f0; /* Light background for readonly fields */
+            border: 1px solid #ccc; /* Border for readonly fields */
+            color: #333; /* Text color */
+        }
+    </style>
+</head>
+<body class="fade-in">
+    <a id="home-button" href="{% url 'main:home' %}" class="home-button">Back to Home</a>
+    
+    <!-- Restore the title text -->
+    <h1 class="title">PIT SCOUT</h1>
+
+    <!-- Pit Scout Button -->
+    <a id="pit-scout-button" href="{% url 'main:pit_scout' %}" class="home-button">Go to Pit Scout</a>
+
+    <!-- INFORMATION Section -->
+    <div class="info-container">
+        <h3>INFORMATION</h3>
+        <label for="scouter-name">Scouter Name:</label>
+        <input type="text" id="scouter-name" class="info-input" value="John Doe" readonly>
+
+        <label for="team-number">Team Number:</label>
+        <input type="number" id="team-number" class="info-input" value="1234" readonly>
+
+        <label for="match-number">Match#:</label>
+        <input type="number" id="match-number" class="info-input" value="1" readonly>
+
+        <label for="event">Event:</label>
+        <input type="text" id="event" class="info-input" value="Regional" readonly>
+    </div>
+
+    <!-- Chassis Section -->
+    <div class="chassis-container">
+        <h3>Chassis:</h3>
+        <div class="radio-button">
+            <input type="radio" name="driveType" value="Swerve Drive" id="swerve-drive" required>
+            <label for="swerve-drive">Swerve Drive</label>
+        </div>
+        <div class="radio-button">
+            <input type="radio" name="driveType" value="Mecanum" id="mecanum-drive" required>
+            <label for="mecanum-drive">Mecanum</label>
+        </div>
+        <div class="radio-button">
+            <input type="radio" name="driveType" value="Tank Drive" id="tank-drive" required>
+            <label for="tank-drive">Tank Drive</label>
+        </div>
+    </div>
+
+    <!-- Gear Ratio Section -->
+    <div class="gear-ratio-container">
+        <h3>Gear Ratio:</h3>
+        <select id="gear-ratio-1">
+            <option value="L1">L1</option>
+            <option value="L2">L2</option>
+            <option value="L3">L3</option>
+            <option value="L4">L4</option>
+        </select>
+        <span>:</span>
+        <select id="gear-ratio-2">
+            <option value="L1">L1</option>
+            <option value="L2">L2</option>
+            <option value="L3">L3</option>
+            <option value="L4">L4</option>
+        </select>
+    </div>
+
+    <!-- Mechanism Section -->
+    <div class="mechanism-container">
+        <h3>Mechanism:</h3>
+        <div class="radio-button">
+            <input type="radio" name="mechanism" value="Arm" id="arm-mechanism">
+            <label for="arm-mechanism">Arm</label>
+        </div>
+        <div class="radio-button">
+            <input type="radio" name="mechanism" value="Elevator" id="elevator-mechanism">
+            <label for="elevator-mechanism">Elevator</label>
+            <input type="text" class="gear-ratio-input" placeholder="Others:">
+        </div>
+    </div>
+
+    <!-- Intake Section -->
+    <div class="intake-container">
+        <h3>Intake:</h3>
+        <div class="radio-button">
+            <input type="radio" name="Intake" value="Share" id="share-intake">
+            <label for="share-intake">Share</label>
+        </div>
+        <div class="radio-button">
+            <input type="radio" name="Intake" value="Independent" id="independent-intake">
+            <label for="independent-intake">Independent</label>
+        </div>
+    </div>
+
+    <!-- Reef Capability -->
+    <div class="reef-capability-container">
+        <h3>Reef Capability:</h3>
+        <div class="reef-capability-options">
+            <div class="reef-capability-option">
+                <input type="checkbox" name="reefCapability" value="L1" id="l1" required>
+                <label for="l1">L1</label>
+            </div>
+            <div class="reef-capability-option">
+                <input type="checkbox" name="reefCapability" value="L2" id="l2" required>
+                <label for="l2">L2</label>
+            </div>
+            <div class="reef-capability-option">
+                <input type="checkbox" name="reefCapability" value="L3" id="l3" required>
+                <label for="l3">L3</label>
+            </div>
+            <div class="reef-capability-option">
+                <input type="checkbox" name="reefCapability" value="L4" id="l4" required>
+                <label for="l4">L4</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vision Section -->
+    <div class="vision-container">
+        <h3>Vision:</h3>
+        <div class="vision-options">
+            <div class="radio-button">
+                <input type="checkbox" name="visionType" value="Auto-Alignment" id="auto-alignment" required>
+                <label for="auto-alignment">Auto-Alignment</label>
+            </div>
+            <div class="radio-button">
+                <input type="checkbox" name="visionType" value="Field-Positioning" id="field-positioning" required>
+                <label for="field-positioning">Field-Positioning</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hang Section -->
+    <div class="hang-container">
+        <h3>Hang:</h3>
+        <div class="hang-options">
+            <div class="radio-button">
+                <input type="radio" name="Hang" value="None/Park" id="none-park">
+                <label for="none-park">None/Park</label>
+            </div>
+            <div class="radio-button">
+                <input type="radio" name="Hang" value="Shallow" id="shallow-hang">
+                <label for="shallow-hang">Shallow</label>
+            </div>
+            <div class="radio-button">
+                <input type="radio" name="Hang" value="Deep" id="deep-hang">
+                <label for="deep-hang">Deep</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confidence Section -->
+    <div class="confidence-container">
+        <h3>Is Human Confident in scoring algae to net?</h3>
+        <div class="radio-button">
+            <input type="radio" name="confidence" value="Yes" id="confidence-yes" required>
+            <label for="confidence-yes">Yes</label>
+        </div>
+        <div class="radio-button">
+            <input type="radio" name="confidence" value="No" id="confidence-no" required>
+            <label for="confidence-no">No</label>
+        </div>
+    </div>
+
+    <!-- Driver Experience Section -->
+    <div class="experience-container">
+        <h3>Driver Experience (Year):</h3>
+        <input type="number" class="experience-input" placeholder="Years" min="0" required id="driver-experience">
+    </div>
+
+    <!-- Driver Awareness Section -->
+    <div class="experience-container">
+        <h3>Driver Awareness:</h3>
+        <input type="range" class="experience-input" min="1" max="10" value="5" id="driver-awareness-slider" required>
+        <span id="slider-value">5</span>
+    </div>
+
+    <script>
+        // Save form data to local storage
+        function saveFormData() {
+            const scouterName = document.getElementById("scouter-name").value;
+            const teamNumber = document.getElementById("team-number").value;
+            const matchNumber = document.getElementById("match-number").value;
+            const eventField = document.getElementById("event").value;
+
+            localStorage.setItem("scouterName", scouterName);
+            localStorage.setItem("teamNumber", teamNumber);
+            localStorage.setItem("matchNumber", matchNumber);
+            localStorage.setItem("eventField", eventField);
+
+            // Save other sections
+            localStorage.setItem("driveType", document.querySelector('input[name="driveType"]:checked')?.value || '');
+            localStorage.setItem("gearRatio1", document.getElementById("gear-ratio-1").value);
+            localStorage.setItem("gearRatio2", document.getElementById("gear-ratio-2").value);
+            localStorage.setItem("mechanism", document.querySelector('input[name="mechanism"]:checked')?.value || '');
+            localStorage.setItem("intake", document.querySelector('input[name="Intake"]:checked')?.value || '');
+            localStorage.setItem("reefCapability", Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value).join(','));
+            localStorage.setItem("visionType", Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value).join(','));
+            localStorage.setItem("hang", document.querySelector('input[name="Hang"]:checked')?.value || '');
+            localStorage.setItem("confidence", document.querySelector('input[name="confidence"]:checked')?.value || '');
+            localStorage.setItem("driverExperience", document.getElementById("driver-experience").value);
+            localStorage.setItem("driverAwareness", document.getElementById("driver-awareness-slider").value);
+        }
+
+        // Load form data from local storage
+        function loadFormData() {
+            document.getElementById("scouter-name").value = localStorage.getItem("scouterName") || '';
+            document.getElementById("team-number").value = localStorage.getItem("teamNumber") || '';
+            document.getElementById("match-number").value = localStorage.getItem("matchNumber") || '';
+            document.getElementById("event").value = localStorage.getItem("eventField") || '';
+
+            // Load other sections
+            const driveType = localStorage.getItem("driveType");
+            if (driveType) {
+                document.querySelector(`input[name="driveType"][value="${driveType}"]`).checked = true;
+            }
+
+            document.getElementById("gear-ratio-1").value = localStorage.getItem("gearRatio1") || 'L1';
+            document.getElementById("gear-ratio-2").value = localStorage.getItem("gearRatio2") || 'L1';
+
+            const mechanism = localStorage.getItem("mechanism");
+            if (mechanism) {
+                document.querySelector(`input[name="mechanism"][value="${mechanism}"]`).checked = true;
+            }
+
+            const intake = localStorage.getItem("intake");
+            if (intake) {
+                document.querySelector(`input[name="Intake"][value="${intake}"]`).checked = true;
+            }
+
+            const reefCapability = localStorage.getItem("reefCapability")?.split(',') || [];
+            reefCapability.forEach(value => {
+                const checkbox = document.querySelector(`input[name="reefCapability"][value="${value}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+
+            const visionType = localStorage.getItem("visionType")?.split(',') || [];
+            visionType.forEach(value => {
+                const checkbox = document.querySelector(`input[name="visionType"][value="${value}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+
+            const hang = localStorage.getItem("hang");
+            if (hang) {
+                document.querySelector(`input[name="Hang"][value="${hang}"]`).checked = true;
+            }
+
+            const confidence = localStorage.getItem("confidence");
+            if (confidence) {
+                document.querySelector(`input[name="confidence"][value="${confidence}"]`).checked = true;
+            }
+
+            document.getElementById("driver-experience").value = localStorage.getItem("driverExperience") || '';
+            document.getElementById("driver-awareness-slider").value = localStorage.getItem("driverAwareness") || 5;
+            document.getElementById("slider-value").textContent = document.getElementById("driver-awareness-slider").value;
+        }
+
+        // Load data when the page is loaded
+        window.onload = function() {
+            loadFormData();
+            d3.select("body").style("opacity", 1);
+        };
+
+        // Save data before leaving the page
+        window.addEventListener("beforeunload", saveFormData);
+
+        // Home button functionality
+        d3.select("#home-button").on("click", function(event) {
+            event.preventDefault(); 
+            const targetUrl = this.href; 
+
+            d3.select("body")
+                .transition()
+                .duration(500) 
+                .style("opacity", 0) 
+                .on("end", function() {
+                    window.location.href = targetUrl; 
+                });
+        });
+
+        // Pit Scout button functionality
+        d3.select("#pit-scout-button").on("click", function(event) {
+            event.preventDefault(); 
+            const targetUrl = this.href; 
+
+            // Check if all required fields are filled
+            const scouterName = document.getElementById("scouter-name").value;
+            const teamNumber = document.getElementById("team-number").value;
+            const matchNumber = document.getElementById("match-number").value;
+            const eventField = document.getElementById("event").value;
+
+            if (!scouterName || !teamNumber || !matchNumber || !eventField) {
+                alert("Please fill in all required fields in the INFORMATION section.");
+                return; // Stop the navigation if fields are not filled
+            }
+
+            d3.select("body")
+                .transition()
+                .duration(500) 
+                .style("opacity", 0) 
+                .on("end", function() {
+                    window.location.href = targetUrl;
+                });
+        });
+
+        // Update the displayed value of the slider
+        const slider = document.getElementById("driver-awareness-slider");
+        const sliderValue = document.getElementById("slider-value");
+        slider.oninput = function() {
+            sliderValue.textContent = this.value;
+        };
+    </script>
+</body>
+</html> 

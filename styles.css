@@ -1,0 +1,9 @@
+.chassis-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: fit-content; /* Adjust width as needed */
+}
+
+.radio-button {
+    cursor: pointer;
+} 

@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REEFSCAPE</title>
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#00ffff">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+
+
+
+        .fade-in {
+            opacity: 0; 
+            transition: opacity 500ms ease-in; 
+        }
+
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Impact, sans-serif;
+            background-color: rgb(0, 217, 255);
+            color: black;
+            position: relative;
+            padding: 20px;  
+        }
+        .title {
+            font-size: clamp(48px, 12vw, 72px);
+            margin-top: 50px;
+            margin-bottom: 50px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .manual {
+            font-size: clamp(24px, 6vw, 36px); 
+            margin-bottom: 40px;
+            text-decoration: none;
+            color: white;
+            cursor: pointer;
+            background-color: rgb(0, 9, 141);
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;  
+            white-space: nowrap;  
+        }
+        .manual:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+            
+        }
+        .pit-scout-button {
+            padding: 25px 50px;
+            font-family: Impact, sans-serif;
+            font-size: clamp(32px, 7vw, 46px);
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        .pit-scout-button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        .below-manual {
+            font-size: clamp(16px, 4vw, 24px);
+            margin-top: 20px;
+            text-align: center;
+            font-family: Impact, sans-serif;
+            color: black;
+        }
+        .thumbnail {
+            max-width: 300px; 
+            width: 90%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 10px; 
+        }
+        
+        @media screen and (max-width: 600px) {
+            body {
+                padding: 10px;  
+            }
+            .pit-scout-button {
+                padding: 20px 40px;
+            }
+        }
+        .fade-in {
+            opacity: 0; 
+            transition: opacity 500ms ease-in; 
+        }
+
+        .info-container {
+            border: 2px solid black; 
+            padding: 20px; 
+            width: 600px;
+            margin: 20px auto; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start;
+            box-sizing: border-box; 
+        }
+
+        .info-container h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            margin-top: 10px; 
+            margin-bottom: 5px; 
+            font-size: 16px; 
+        }
+
+        .info-input {
+            margin: 5px 0; 
+            width: 100%; 
+            padding: 10px; 
+            font-size: 16px;
+            box-sizing: border-box; 
+        }
+
+        .title-image {
+            width: 100%; 
+            max-width: 600px;
+            height: auto; 
+            margin-top: 20px;
+            margin-bottom: 30px; 
+        }
+    </style>
+</head>
+<body class="fade-in">
+    <img src="{% static 'icons/ezgif-3-e133a04608-removebg-preview.png' %}" alt="Reefscape Title" class="title-image">
+    <a id="game-manual" href="{% url 'main:serve_manual' %}" class="manual" target="_blank">GAME MANUAL</a>
+    <a id="pit-scout-button" href="{% url 'main:pit_scout' %}" class="pit-scout-button">Go to Pit Scout</a>
+    <div style="flex-grow: 1;"></div>
+    <div class="container">
+        
+    </div>
+    <script>
+        // Save form data to local storage
+        function saveFormData() {
+            const scouterName = document.getElementById("scouter-name").value;
+            const teamNumber = document.getElementById("team-number").value;
+            const matchNumber = document.getElementById("match-number").value;
+            const eventField = document.getElementById("event").value;
+
+            localStorage.setItem("scouterName", scouterName);
+            localStorage.setItem("teamNumber", teamNumber);
+            localStorage.setItem("matchNumber", matchNumber);
+            localStorage.setItem("eventField", eventField);
+        }
+
+        // Load form data from local storage
+        function loadFormData() {
+            document.getElementById("scouter-name").value = localStorage.getItem("scouterName") || '';
+            document.getElementById("team-number").value = localStorage.getItem("teamNumber") || '';
+            document.getElementById("match-number").value = localStorage.getItem("matchNumber") || '';
+            document.getElementById("event").value = localStorage.getItem("eventField") || '';
+        }
+
+        // Load data when the page is loaded
+        window.onload = function() {
+            loadFormData();
+            d3.select("body").style("opacity", 1);
+        };
+
+        // Save data before leaving the page
+        window.addEventListener("beforeunload", saveFormData);
+
+        d3.select("#pit-scout-button").on("click", function(event) {
+            event.preventDefault(); 
+            const targetUrl = this.href; 
+
+            // Check if all required fields are filled
+            const scouterName = document.getElementById("scouter-name").value;
+            const teamNumber = document.getElementById("team-number").value;
+            const matchNumber = document.getElementById("match-number").value;
+            const eventField = document.getElementById("event").value;
+
+            if (!scouterName || !teamNumber || !matchNumber || !eventField) {
+                alert("Please fill in all required fields in the INFORMATION section.");
+                return; // Stop the navigation if fields are not filled
+            }
+
+            d3.select("body")
+                .transition()
+                .duration(500) 
+                .style("opacity", 0) 
+                .on("end", function() {
+                    window.location.href = targetUrl;
+                });
+        });
+    </script>
+    <script src="{% static 'js/app.js' %}"></script>
+
+    <!-- INFORMATION Section -->
+    <div class="info-container">
+        <h3>INFORMATION</h3>
+        <label for="scouter-name">Scouter Name:</label>
+        <input type="text" id="scouter-name" class="info-input" placeholder="Enter Scouter Name" required>
+
+        <label for="team-number">Team Number:</label>
+        <input type="number" id="team-number" class="info-input" placeholder="Enter Team Number" min="0" required>
+
+        <label for="match-number">Match#:</label>
+        <input type="number" id="match-number" class="info-input" placeholder="Enter Match Number" min="0" required>
+
+        <label for="event">Event:</label>
+        <input type="text" id="event" class="info-input" placeholder="Enter Event" required>
+    </div>
+
+  
+
+   
+</body>
+</html>
