@@ -12,7 +12,7 @@ def serve_manual(request):
         return HttpResponseNotFound('Unable to access game manual')
 
 def home(request):
-    return render(request, 'main/home.html')
+    return render(request, 'index.html')  # This should work now
 
 def pit_scout(request):
     return render(request, 'main/pit_scout.html')

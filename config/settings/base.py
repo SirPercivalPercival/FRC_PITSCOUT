@@ -32,7 +32,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR],  # Ensure this points to the root folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

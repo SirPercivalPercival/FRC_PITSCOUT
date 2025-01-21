@@ -3,7 +3,8 @@ from decouple import config
 import os
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DIRS: [r'C:\Users\yello\Downloads\pit scout and super scout']
 
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
@@ -39,7 +40,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'main' / 'templates'], 
+        'DIRS': [BASE_DIR],  # Ensure BASE_DIR is included
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -51,6 +52,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 

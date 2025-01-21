@@ -34,7 +34,7 @@ ROOT_URLCONF = 'reefscape.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR],  # Ensure BASE_DIR is included
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -46,6 +46,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = 'reefscape.wsgi.application'
 
