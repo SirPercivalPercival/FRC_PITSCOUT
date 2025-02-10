@@ -1,1 +1,123 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR CODE</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="node_modules/qrious/dist/qrious.umd.js"></script>
+
+    <style>
+        body {
+            background-color: cyan;
+            color: black;
+            text-align: center;
+            font-family: Impact, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 36px;
+            margin: 20px 0;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+        #qr-codes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        #team-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .green-button {
+            background-color: green;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .green-button:hover {
+            background-color: darkgreen;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>QR CODE:</h1>
+    <canvas id="qr-code"></canvas>
+    <div id="qr-codes">
+        <p id="team-number"></p> 
+    </div>
+    <button class="green-button" id="go-home">Go back to home page</button>
+
+    <script>
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const scouterName = urlParams.get('scouterName') || 'N/A';
+        const teamNumber = urlParams.get('teamNumber') || 'N/A';
+        const matchNumber = urlParams.get('matchNumber') || 'N/A';
+        const eventField = urlParams.get('eventField') || 'N/A';
+        const driverExperience = urlParams.get('driverExperience') || 'N/A';
+        const driveType = urlParams.get('driveType') || 'N/A';
+        const mechanism = urlParams.get('mechanism') || 'N/A';
+        const intake = urlParams.get('intake') || 'N/A';
+        const hang = urlParams.get('hang') || 'N/A';
+        const confidence = urlParams.get('confidence') || 'N/A';
+        const reefCapability = urlParams.get('reefCapability') || 'N/A';
+        const visionType = urlParams.get('visionType') || 'N/A';
+        const gearRatio1 = urlParams.get('gearRatio1') || 'N/A';
+        const gearRatio2 = urlParams.get('gearRatio2') || 'N/A';
+        const algaeCapability = urlParams.get('algaeCapability') || 'N/A';
+        const preload = urlParams.get('preload') || 'N/A';
+
+ 
+        console.log("Scouter Name:", scouterName);
+        console.log("Team Number:", teamNumber);
+        console.log("Match Number:", matchNumber);
+        console.log("Event Field:", eventField);
+        console.log("Driver Experience:", driverExperience);
+        console.log("Drive Type:", driveType);
+        console.log("Mechanism:", mechanism);
+        console.log("Intake:", intake);
+        console.log("Hang:", hang);
+        console.log("Confidence:", confidence);
+        console.log("Reef Capability:", reefCapability);
+        console.log("Vision Type:", visionType);
+        console.log("Gear Ratio 1:", gearRatio1);
+        console.log("Gear Ratio 2:", gearRatio2);
+        console.log("Algae Capability:", algaeCapability);
+        console.log("PreLoad:", preload);
+
+
+        const data = `Scouter Name: ${scouterName}, Team Number: ${teamNumber}, Chassis: ${driveType}, Gear Ratio: ${gearRatio1}:${gearRatio2}, Mechanism: ${mechanism}, Intake: ${intake}, Algae Capability: ${algaeCapability}, Reef Capability: ${reefCapability}, PreLoad: ${preload}, Vision Type: ${visionType}, Hang: ${hang}, Is Human Confident in Scoring Algae: ${confidence}, Driver Experience: ${driverExperience}`;
+
+        const qr = new QRious({
+            element: document.getElementById('qr-code'),
+            value: data,
+            size: 200
+        });
+
+        document.getElementById('team-number').textContent = `Team Number: ${teamNumber}`;
+
+
+        const qrCodeHistory = JSON.parse(localStorage.getItem('qrCodeHistory')) || [];
+        qrCodeHistory.unshift({ data, teamNumber }); 
+        localStorage.setItem('qrCodeHistory', JSON.stringify(qrCodeHistory));
+
+
+        document.getElementById('go-home').addEventListener('click', function() {
+            window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/'; 
+        });
+    </script>
+</body>
+</html>
