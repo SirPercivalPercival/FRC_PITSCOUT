@@ -1,14 +1,15 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pit Scout</title>
-    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="manifest" href="static\manifest.json">
     <meta name="theme-color" content="#00ffff">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
         .fade-in {
             opacity: 0; 
@@ -21,7 +22,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            font-family: Impact, sans-serif;
+            font-family: 'Impact', sans-serif;
             background-color: rgb(0, 217, 255);
             color: black;
             position: relative;
@@ -33,16 +34,16 @@
             text-align: center;
         }
         .home-button {
-            font-family: Impact, sans-serif;
-            font-size: clamp(20px, 6vw, 28px);
+            font-family: 'Impact', sans-serif;
+            font-size: clamp(24px, 8vw, 32px);
             cursor: pointer;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             text-decoration: none;
             white-space: nowrap;
-            padding: 10px 20px;
+            padding: 15px 30px;
             margin-bottom: 30px;
             transition: all 0.3s;
         }
@@ -62,7 +63,7 @@
             transition: opacity 500ms ease-in; 
         }
 
-        .chassis-container, .gear-ratio-container, .vision-container, .hang-container, .reef-capability-container, .confidence-container, .experience-container, .intake-container, .mechanism-container {
+        .weight container, .preload-container, .algae-capability-container, .chassis-container, .gear-ratio-container, .vision-container, .hang-container, .reef-capability-container, .confidence-container, .experience-container, .intake-container, .mechanism-container {
             border: 2px solid black;
             padding: 5px;
             width: 400px;
@@ -71,7 +72,7 @@
             align-items: center;
         }
 
-        .chassis-container h3, .gear-ratio-container h3, .vision-container h3, .hang-container h3, .reef-capability-container h3, .confidence-container h3, .experience-container h3 {
+        .weight-container h3, .preload-container h3, .algae-capability-container h3, .chassis-container h3, .gear-ratio-container h3, .vision-container h3, .hang-container h3, .reef-capability-container h3, .confidence-container h3, .experience-container h3, .mechanism-container h3, .intake-container h3{
             font-family: 'Bebas Neue', sans-serif;
             font-size: 32px;
             margin-right: 10px;
@@ -80,6 +81,31 @@
         .radio-button label, .gear-ratio-label {
             font-family: 'Bebas Neue', sans-serif;
         }
+
+        .weight-container {
+            border: 2px solid black;
+            padding: 20px;
+            margin: 20px auto;
+            width: 600px;
+            box-sizing: border-box;
+        }
+        
+        .weight-inputs {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .weight-inputs label {
+            font-size: 16px;
+        }
+        
+        .weight-inputs input {
+            width: 120px;
+            padding: 5px;
+            font-size: 16px;
+        }
+        
 
         .radio-button {
             cursor: pointer;
@@ -171,37 +197,70 @@
             padding: 10px; 
             font-size: 16px;
             box-sizing: border-box; 
-            background-color: #f0f0f0; /* Light background for readonly fields */
-            border: 1px solid #ccc; /* Border for readonly fields */
-            color: #333; /* Text color */
+            background-color: #f0f0f0; 
+            border: 1px solid #ccc; 
+            color: #333; 
         }
+
+        .submit-button {
+            background-color: green;
+            color: white;
+            padding: 20px 40px;
+            font-size: 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-family: 'Impact', sans-serif;
+        }
+        .submit-button:hover {
+            background-color: darkgreen; 
+        }
+        .section-label {
+            font-size: 28px; 
+            font-weight: bold; 
+            margin-top: 20px; 
+            margin-bottom: 10px; 
+            color: yellow; 
+            background-color: rgba(0, 0, 0, 0.5); 
+            padding: 10px; 
+            border-radius: 5px; 
+            font-family: 'Impact', sans-serif; 
+        }
+        
+        #gear-ratio-container {
+            display: none; 
+        }
+
+        .mechanism-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; 
+        }
+
     </style>
 </head>
 <body class="fade-in">
-    <a id="home-button" href="{% url 'main:index' %}" class="home-button">Back to Home</a>
+    <a id="home-button" href="https://sirpercivalpercival.github.io/FRC_PITSCOUT/" class="home-button">Back to Home</a>
     
-    <!-- Restore the title text -->
+   
     <h1 class="title">PIT SCOUT</h1>
 
- 
+    
 
-    <!-- INFORMATION Section -->
+   
     <div class="info-container">
         <h3>INFORMATION</h3>
         <label for="scouter-name">Scouter Name:</label>
-        <input type="text" id="scouter-name" class="info-input" value="John Doe" readonly>
+        <input type="text" id="scouter-name" class="info-input" value="" readonly>
 
         <label for="team-number">Team Number:</label>
         <input type="number" id="team-number" class="info-input" value="1234" readonly>
 
-        <label for="match-number">Match#:</label>
-        <input type="number" id="match-number" class="info-input" value="1" readonly>
-
-        <label for="event">Event:</label>
-        <input type="text" id="event" class="info-input" value="Regional" readonly>
+        
     </div>
 
-    <!-- Chassis Section -->
+    
     <div class="chassis-container">
         <h3>Chassis:</h3>
         <div class="radio-button">
@@ -218,25 +277,26 @@
         </div>
     </div>
 
-    <!-- Gear Ratio Section -->
-    <div class="gear-ratio-container">
-        <h3>Gear Ratio:</h3>
-        <select id="gear-ratio-1">
-            <option value="L1">L1</option>
-            <option value="L2">L2</option>
-            <option value="L3">L3</option>
-            <option value="L4">L4</option>
-        </select>
-        <span>:</span>
-        <select id="gear-ratio-2">
-            <option value="L1">L1</option>
-            <option value="L2">L2</option>
-            <option value="L3">L3</option>
-            <option value="L4">L4</option>
-        </select>
+    
+    <div id="gear-ratio-container">
+        <div class="gear-ratio-container">
+            <h3>Gear Ratio:</h3>
+            <select id="gear-ratio-1">
+                <option value="L1">L1</option>
+                <option value="L2">L2</option>
+                <option value="L3">L3</option>
+                <option value="L4">L4</option>
+            </select>
+            <span>:</span>
+            <select id="gear-ratio-2">
+                <option value="L1">L1</option>
+                <option value="L2">L2</option>
+                <option value="L3">L3</option>
+                <option value="L4">L4</option>
+            </select>
+        </div>
     </div>
 
-    <!-- Mechanism Section -->
     <div class="mechanism-container">
         <h3>Mechanism:</h3>
         <div class="radio-button">
@@ -245,25 +305,71 @@
         </div>
         <div class="radio-button">
             <input type="radio" name="mechanism" value="Elevator" id="elevator-mechanism">
-            <label for="elevator-mechanism">Elevator</label>
-            <input type="text" class="gear-ratio-input" placeholder="Others:">
+            <label for="elevator-mechanism">Elevator </label>
+        </div>
+        <div class="radio-button">
+            <label for="other-mechanism"> Others:</label>
+            <input type="text" id="other-mechanism" class="gear-ratio-input" placeholder="Enter other mechanism">
         </div>
     </div>
 
-    <!-- Intake Section -->
+    
     <div class="intake-container">
         <h3>Intake:</h3>
         <div class="radio-button">
             <input type="radio" name="Intake" value="Share" id="share-intake">
-            <label for="share-intake">Share</label>
+            <label for="share-intake">Algae+Coral</label>
         </div>
         <div class="radio-button">
             <input type="radio" name="Intake" value="Independent" id="independent-intake">
-            <label for="independent-intake">Independent</label>
+            <label for="independent-intake">Seperated</label>
         </div>
     </div>
 
-    <!-- Reef Capability -->
+    
+    <div class="algae-capability-container">
+        <h3>Algae Capability:</h3>
+        <div class="algae-capability-options">
+            <div class="algae-capability-option">
+                <input type="checkbox" name="algaeCapability" value="Processor" id="processor" required>
+                <label for="processor">Processor</label>
+            </div>
+            <div class="algae-capability-option">
+                <input type="checkbox" name="algaeCapability" value="Net" id="net" required>
+                <label for="net">Net</label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        function saveAlgaeCapability() {
+            const processor = document.getElementById('processor').checked;
+            const net = document.getElementById('net').checked;
+    
+            localStorage.setItem('processorChecked', processor);
+            localStorage.setItem('netChecked', net);
+        }
+    
+        function loadAlgaeCapability() {
+            const processorChecked = localStorage.getItem('processorChecked') === 'true';
+            const netChecked = localStorage.getItem('netChecked') === 'true';
+    
+            document.getElementById('processor').checked = processorChecked;
+            document.getElementById('net').checked = netChecked;
+        }
+    
+
+        document.getElementById('processor').addEventListener('change', saveAlgaeCapability);
+        document.getElementById('net').addEventListener('change', saveAlgaeCapability);
+    
+
+        document.addEventListener('DOMContentLoaded', loadAlgaeCapability);
+    </script>
+
+    
+
+
     <div class="reef-capability-container">
         <h3>Reef Capability:</h3>
         <div class="reef-capability-options">
@@ -286,7 +392,106 @@
         </div>
     </div>
 
-    <!-- Vision Section -->
+    <div class="preload-container">
+        <h3>PreLoad:</h3>
+        <div class="preload-options">
+            <div class="preload-option">
+                <input type="checkbox" name="preload" value="Algae" id="preload-algae" required>
+                <label for="preload-algae">Algae</label>
+            </div>
+            <div class="preload-option">
+                <input type="checkbox" name="preload" value="Coral" id="preload-coral" required>
+                <label for="preload-coral">Coral</label>
+            </div>
+            <div class="preload-option">
+                <input type="checkbox" name="preload" value="Remove Algae from Branch" id="preload-remove-algae" required>
+                <label for="preload-remove-algae">Remove Algae from Branch</label>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+
+        function savePreloadOptions() {
+            const algaeChecked = document.getElementById('preload-algae').checked;
+            const coralChecked = document.getElementById('preload-coral').checked;
+            const removeAlgaeChecked = document.getElementById('preload-remove-algae').checked;
+    
+            localStorage.setItem('preloadAlgaeChecked', algaeChecked);
+            localStorage.setItem('preloadCoralChecked', coralChecked);
+            localStorage.setItem('preloadRemoveAlgaeChecked', removeAlgaeChecked);
+        }
+    
+
+        function loadPreloadOptions() {
+            const algaeChecked = localStorage.getItem('preloadAlgaeChecked') === 'true';
+            const coralChecked = localStorage.getItem('preloadCoralChecked') === 'true';
+            const removeAlgaeChecked = localStorage.getItem('preloadRemoveAlgaeChecked') === 'true';
+    
+            document.getElementById('preload-algae').checked = algaeChecked;
+            document.getElementById('preload-coral').checked = coralChecked;
+            document.getElementById('preload-remove-algae').checked = removeAlgaeChecked;
+        }
+    
+
+        document.getElementById('preload-algae').addEventListener('change', savePreloadOptions);
+        document.getElementById('preload-coral').addEventListener('change', savePreloadOptions);
+        document.getElementById('preload-remove-algae').addEventListener('change', savePreloadOptions);
+
+        document.addEventListener('DOMContentLoaded', loadPreloadOptions);
+    </script>
+
+
+    <div class="hang-container">
+        <h3>Hang:</h3>
+        <div class="hang-options">
+            <div class="radio-button">
+                <input type="radio" name="Hang" value="None" id="hang-none">
+                <label for="hang-none">None</label>
+            </div>
+            <div class="radio-button">
+                <input type="radio" name="Hang" value="Park" id="hang-park">
+                <label for="hang-park">Park</label>
+            </div>
+            <div class="radio-button">
+                <input type="radio" name="Hang" value="Shallow" id="hang-shallow">
+                <label for="hang-shallow">Shallow</label>
+            </div>
+            <div class="radio-button">
+                <input type="radio" name="Hang" value="Deep" id="hang-deep">
+                <label for="hang-deep">Deep</label>
+            </div>
+        </div>
+    </div>
+    
+<script>
+
+    function saveHangSelection() {
+        const selectedOption = document.querySelector('input[name="Hang"]:checked');
+        if (selectedOption) {
+            localStorage.setItem('hangSelection', selectedOption.id);
+        }
+    }
+
+
+    function loadHangSelection() {
+        const savedSelectionId = localStorage.getItem('hangSelection');
+        if (savedSelectionId) {
+            const savedOption = document.getElementById(savedSelectionId);
+            if (savedOption) {
+                savedOption.checked = true;
+            }
+        }
+    }
+
+    document.querySelectorAll('input[name="Hang"]').forEach(radio => {
+        radio.addEventListener('change', saveHangSelection);
+    });
+
+    document.addEventListener('DOMContentLoaded', loadHangSelection);
+</script>
+
+
     <div class="vision-container">
         <h3>Vision:</h3>
         <div class="vision-options">
@@ -298,29 +503,22 @@
                 <input type="checkbox" name="visionType" value="Field-Positioning" id="field-positioning" required>
                 <label for="field-positioning">Field-Positioning</label>
             </div>
+        </div> 
+    </div>
+
+
+    <div class="weight-container">
+        <h3>Weight of Robot</h3>
+        <div class="weight-inputs">
+            <label for="weight-kg">kg:</label>
+            <input type="number" id="weight-kg" placeholder="Enter weight in kg" step="0.01" min="0">
+            
+            <label for="weight-lbs">lbs:</label>
+            <input type="number" id="weight-lbs" placeholder="Enter weight in lbs" step="0.01" min="0">
         </div>
     </div>
 
-    <!-- Hang Section -->
-    <div class="hang-container">
-        <h3>Hang:</h3>
-        <div class="hang-options">
-            <div class="radio-button">
-                <input type="radio" name="Hang" value="None/Park" id="none-park">
-                <label for="none-park">None/Park</label>
-            </div>
-            <div class="radio-button">
-                <input type="radio" name="Hang" value="Shallow" id="shallow-hang">
-                <label for="shallow-hang">Shallow</label>
-            </div>
-            <div class="radio-button">
-                <input type="radio" name="Hang" value="Deep" id="deep-hang">
-                <label for="deep-hang">Deep</label>
-            </div>
-        </div>
-    </div>
 
-    <!-- Confidence Section -->
     <div class="confidence-container">
         <h3>Is Human Confident in scoring algae to net?</h3>
         <div class="radio-button">
@@ -333,157 +531,222 @@
         </div>
     </div>
 
-    <!-- Driver Experience Section -->
+
     <div class="experience-container">
         <h3>Driver Experience (Year):</h3>
         <input type="number" class="experience-input" placeholder="Years" min="0" required id="driver-experience">
     </div>
 
-    <!-- Driver Awareness Section -->
+    <!--
     <div class="experience-container">
         <h3>Driver Awareness:</h3>
         <input type="range" class="experience-input" min="1" max="10" value="5" id="driver-awareness-slider" required>
         <span id="slider-value">5</span>
-    </div>
+    </div>-->
+
+    <form id="scoutForm">
+        <button type="button" class="submit-button" id="submitButton">Submit</button>
+    </form>
 
     <script>
-        // Save form data to local storage
-        function saveFormData() {
-            const scouterName = document.getElementById("scouter-name").value;
-            const teamNumber = document.getElementById("team-number").value;
-            const matchNumber = document.getElementById("match-number").value;
-            const eventField = document.getElementById("event").value;
+        document.addEventListener('DOMContentLoaded', function () {
 
-            localStorage.setItem("scouterName", scouterName);
-            localStorage.setItem("teamNumber", teamNumber);
-            localStorage.setItem("matchNumber", matchNumber);
-            localStorage.setItem("eventField", eventField);
+            const weightKgInput = document.getElementById('weight-kg');
+            const weightLbsInput = document.getElementById('weight-lbs');
+        
 
-            // Save other sections
-            localStorage.setItem("driveType", document.querySelector('input[name="driveType"]:checked')?.value || '');
-            localStorage.setItem("gearRatio1", document.getElementById("gear-ratio-1").value);
-            localStorage.setItem("gearRatio2", document.getElementById("gear-ratio-2").value);
-            localStorage.setItem("mechanism", document.querySelector('input[name="mechanism"]:checked')?.value || '');
-            localStorage.setItem("intake", document.querySelector('input[name="Intake"]:checked')?.value || '');
-            localStorage.setItem("reefCapability", Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value).join(','));
-            localStorage.setItem("visionType", Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value).join(','));
-            localStorage.setItem("hang", document.querySelector('input[name="Hang"]:checked')?.value || '');
-            localStorage.setItem("confidence", document.querySelector('input[name="confidence"]:checked')?.value || '');
-            localStorage.setItem("driverExperience", document.getElementById("driver-experience").value);
-            localStorage.setItem("driverAwareness", document.getElementById("driver-awareness-slider").value);
-        }
+            const KG_TO_LBS = 2.204623;
+            const LBS_TO_KG = 0.4535924;
+        
 
-        // Load form data from local storage
-        function loadFormData() {
-            document.getElementById("scouter-name").value = localStorage.getItem("scouterName") || '';
-            document.getElementById("team-number").value = localStorage.getItem("teamNumber") || '';
-            document.getElementById("match-number").value = localStorage.getItem("matchNumber") || '';
-            document.getElementById("event").value = localStorage.getItem("eventField") || '';
+            const savedWeightKg = localStorage.getItem('weightKg');
+            const savedWeightLbs = localStorage.getItem('weightLbs');
+            if (savedWeightKg) weightKgInput.value = savedWeightKg;
+            if (savedWeightLbs) weightLbsInput.value = savedWeightLbs;
+        
 
-            // Load other sections
-            const driveType = localStorage.getItem("driveType");
-            if (driveType) {
-                document.querySelector(`input[name="driveType"][value="${driveType}"]`).checked = true;
-            }
+            weightKgInput.addEventListener('input', function () {
+                const kgValue = parseFloat(weightKgInput.value);
+                if (!isNaN(kgValue)) {
+                    const lbsValue = (kgValue * KG_TO_LBS).toFixed(2);
+                    weightLbsInput.value = lbsValue;
+        
 
-            document.getElementById("gear-ratio-1").value = localStorage.getItem("gearRatio1") || 'L1';
-            document.getElementById("gear-ratio-2").value = localStorage.getItem("gearRatio2") || 'L1';
+                    localStorage.setItem('weightKg', kgValue);
+                    localStorage.setItem('weightLbs', lbsValue);
+                } else if (weightKgInput.value.trim() === '') {
 
-            const mechanism = localStorage.getItem("mechanism");
-            if (mechanism) {
-                document.querySelector(`input[name="mechanism"][value="${mechanism}"]`).checked = true;
-            }
-
-            const intake = localStorage.getItem("intake");
-            if (intake) {
-                document.querySelector(`input[name="Intake"][value="${intake}"]`).checked = true;
-            }
-
-            const reefCapability = localStorage.getItem("reefCapability")?.split(',') || [];
-            reefCapability.forEach(value => {
-                const checkbox = document.querySelector(`input[name="reefCapability"][value="${value}"]`);
-                if (checkbox) {
-                    checkbox.checked = true;
+                    weightLbsInput.value = '';
+                    localStorage.removeItem('weightKg');
+                    localStorage.removeItem('weightLbs');
                 }
             });
+        
 
-            const visionType = localStorage.getItem("visionType")?.split(',') || [];
-            visionType.forEach(value => {
-                const checkbox = document.querySelector(`input[name="visionType"][value="${value}"]`);
-                if (checkbox) {
-                    checkbox.checked = true;
+            weightLbsInput.addEventListener('input', function () {
+                const lbsValue = parseFloat(weightLbsInput.value);
+                if (!isNaN(lbsValue)) {
+                    const kgValue = (lbsValue * LBS_TO_KG).toFixed(2);
+                    weightKgInput.value = kgValue;
+        
+
+                    localStorage.setItem('weightKg', kgValue);
+                    localStorage.setItem('weightLbs', lbsValue);
+                } else if (weightLbsInput.value.trim() === '') {
+
+                    weightKgInput.value = '';
+                    localStorage.removeItem('weightKg');
+                    localStorage.removeItem('weightLbs');
                 }
             });
-
-            const hang = localStorage.getItem("hang");
-            if (hang) {
-                document.querySelector(`input[name="Hang"][value="${hang}"]`).checked = true;
-            }
-
-            const confidence = localStorage.getItem("confidence");
-            if (confidence) {
-                document.querySelector(`input[name="confidence"][value="${confidence}"]`).checked = true;
-            }
-
-            document.getElementById("driver-experience").value = localStorage.getItem("driverExperience") || '';
-            document.getElementById("driver-awareness-slider").value = localStorage.getItem("driverAwareness") || 5;
-            document.getElementById("slider-value").textContent = document.getElementById("driver-awareness-slider").value;
-        }
-
-        // Load data when the page is loaded
-        window.onload = function() {
-            loadFormData();
-            d3.select("body").style("opacity", 1);
-        };
-
-        // Save data before leaving the page
-        window.addEventListener("beforeunload", saveFormData);
-
-        // Home button functionality
-        d3.select("#home-button").on("click", function(event) {
-            event.preventDefault(); 
-            const targetUrl = this.href; 
-
-            d3.select("body")
-                .transition()
-                .duration(500) 
-                .style("opacity", 0) 
-                .on("end", function() {
-                    window.location.href = targetUrl; 
-                });
         });
+    
 
-        // Pit Scout button functionality
-        d3.select("#pit-scout-button").on("click", function(event) {
-            event.preventDefault(); 
-            const targetUrl = this.href; 
+            document.getElementById('other-mechanism').addEventListener('input', function () {
+                if (this.value.trim()) {
 
-            // Check if all required fields are filled
-            const scouterName = document.getElementById("scouter-name").value;
-            const teamNumber = document.getElementById("team-number").value;
-            const matchNumber = document.getElementById("match-number").value;
-            const eventField = document.getElementById("event").value;
+                    document.getElementById('arm-mechanism').checked = false;
+                    document.getElementById('elevator-mechanism').checked = false;
+    
 
-            if (!scouterName || !teamNumber || !matchNumber || !eventField) {
-                alert("Please fill in all required fields in the INFORMATION section.");
-                return; // Stop the navigation if fields are not filled
+                    localStorage.setItem('otherMechanism', this.value.trim());
+                }
+            });
+    
+
+            document.querySelectorAll('input[name="mechanism"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    if (this.checked) {
+                        document.getElementById('other-mechanism').value = '';
+                        localStorage.removeItem('otherMechanism'); 
+                    }
+                });
+            });
+    
+            const savedOtherMechanism = localStorage.getItem('otherMechanism');
+            if (savedOtherMechanism) {
+                const otherMechanismField = document.getElementById('other-mechanism');
+                otherMechanismField.value = savedOtherMechanism;
+    
+            
+                document.getElementById('arm-mechanism').checked = false;
+                document.getElementById('elevator-mechanism').checked = false;
+            }
+    
+            
+            function saveFormData() {
+                const scouterName = document.getElementById("scouter-name").value;
+                const teamNumber = document.getElementById("team-number").value;
+                
+    
+                localStorage.setItem("scouterName", scouterName);
+                localStorage.setItem("teamNumber", teamNumber);
+                
+    
+
+                localStorage.setItem("driveType", document.querySelector('input[name="driveType"]:checked')?.value || '');
+                localStorage.setItem("gearRatio1", document.getElementById("gear-ratio-1").value);
+                localStorage.setItem("gearRatio2", document.getElementById("gear-ratio-2").value);
+                localStorage.setItem("mechanism", document.querySelector('input[name="mechanism"]:checked')?.value || '');
+                localStorage.setItem("intake", document.querySelector('input[name="Intake"]:checked')?.value || '');
+                localStorage.setItem("reefCapability", Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value).join(','));
+                localStorage.setItem("visionType", Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value).join(','));
+                localStorage.setItem("hang", document.querySelector('input[name="Hang"]:checked')?.value || '');
+                localStorage.setItem("confidence", document.querySelector('input[name="confidence"]:checked')?.value || '');
+                localStorage.setItem("driverExperience", document.getElementById("driver-experience").value);
             }
 
-            d3.select("body")
-                .transition()
-                .duration(500) 
-                .style("opacity", 0) 
-                .on("end", function() {
-                    window.location.href = targetUrl;
-                });
-        });
+            function loadFormData() {
+                document.getElementById("scouter-name").value = localStorage.getItem("scouterName") || '';
+                document.getElementById("team-number").value = localStorage.getItem("teamNumber") || '';
+                
 
-        // Update the displayed value of the slider
-        const slider = document.getElementById("driver-awareness-slider");
-        const sliderValue = document.getElementById("slider-value");
-        slider.oninput = function() {
-            sliderValue.textContent = this.value;
-        };
+                const driveType = localStorage.getItem("driveType");
+                if (driveType) {
+                    document.querySelector(`input[name="driveType"][value="${driveType}"]`).checked = true;
+                }
+    
+                document.getElementById("gear-ratio-1").value = localStorage.getItem("gearRatio1") || 'L1';
+                document.getElementById("gear-ratio-2").value = localStorage.getItem("gearRatio2") || 'L1';
+    
+                const mechanism = localStorage.getItem("mechanism");
+                if (mechanism) {
+                    document.querySelector(`input[name="mechanism"][value="${mechanism}"]`).checked = true;
+                }
+    
+                const intake = localStorage.getItem("intake");
+                if (intake) {
+                    document.querySelector(`input[name="Intake"][value="${intake}"]`).checked = true;
+                }
+    
+                const reefCapability = localStorage.getItem("reefCapability")?.split(',') || [];
+                reefCapability.forEach(value => {
+                    const checkbox = document.querySelector(`input[name="reefCapability"][value="${value}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+    
+                const visionType = localStorage.getItem("visionType")?.split(',') || [];
+                visionType.forEach(value => {
+                    const checkbox = document.querySelector(`input[name="visionType"][value="${value}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+    
+                const hang = localStorage.getItem("hang");
+                if (hang) {
+                    document.querySelector(`input[name="Hang"][value="${hang}"]`).checked = true;
+                }
+    
+                const confidence = localStorage.getItem("confidence");
+                if (confidence) {
+                    document.querySelector(`input[name="confidence"][value="${confidence}"]`).checked = true;
+                }
+    
+                document.getElementById("driver-experience").value = localStorage.getItem("driverExperience") || '';
+            }
+    
+
+            window.onload = function () {
+                loadFormData();
+                d3.select("body").style("opacity", 1);
+            };
+
+            window.addEventListener("beforeunload", saveFormData);
+       
+    
     </script>
+
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function() {
+
+            const scouterName = document.getElementById('scouter-name').value;
+            const teamNumber = document.getElementById('team-number').value;
+            
+    
+   
+            if (!scouterName || !teamNumber) {
+                alert("Please fill in all required fields before submitting.");
+                return;
+            }
+    
+           
+            const queryString = new URLSearchParams({
+                scouterName,
+                teamNumber
+            }).toString();
+    
+            
+            const url = `/qrcode/?${queryString}`;
+    
+            console.log("Redirecting to:", url); 
+            window.location.href = url;
+        });
+    </script>
+    
+
 </body>
 </html> 
