@@ -545,7 +545,7 @@
     </div>-->
 
     <form id="scoutForm">
-        <button type="button" class="submit-button" id="submitButton">Submit</button>
+        <button type="button" class="submit-button" id="submitButton" href="main\templates\main\QRCODE.html">Submit</button>
     </form>
 
     <script>
@@ -720,32 +720,7 @@
     </script>
 
 
-    <script>
-        document.getElementById('submitButton').addEventListener('click', function() {
-
-            const scouterName = document.getElementById('scouter-name').value;
-            const teamNumber = document.getElementById('team-number').value;
-            
     
-   
-            if (!scouterName || !teamNumber) {
-                alert("Please fill in all required fields before submitting.");
-                return;
-            }
-    
-           
-            const queryString = new URLSearchParams({
-                scouterName,
-                teamNumber
-            }).toString();
-    
-            
-            const url = `/qrcode/?${queryString}`;
-    
-            console.log("Redirecting to:", url); 
-            window.location.href = url;
-        });
-    </script>
     
 
 </body>
