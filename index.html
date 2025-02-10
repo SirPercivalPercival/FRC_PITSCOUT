@@ -1,11 +1,11 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REEFSCAPE</title>
-    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="manifest" href="static\manifest.json">
     <meta name="theme-color" content="#00ffff">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -142,9 +142,10 @@
     </style>
 </head>
 <body class="fade-in">
-    <img src="{% static 'icons/ezgif-3-e133a04608-removebg-preview.png' %}" alt="Reefscape Title" class="title-image">
-    <a id="game-manual" href="{% url 'main:serve_manual' %}" class="manual" target="_blank">GAME MANUAL</a>
-    <a id="pit-scout-button" href="{% url 'main:pit_scout' %}" class="pit-scout-button">Go to Pit Scout</a>
+    <img src="static/icons/ezgif-3-e133a04608-removebg-preview.png" alt="Reefscape Title" class="title-image">
+
+    <a id="game-manual" href="static/pdfs/2025GameManual.pdf" class="manual" target="_blank">GAME MANUAL</a>
+    <a id="pit-scout-button" href="main\templates\main\pit_scout.html" class="pit-scout-button">Go to Pit Scout</a>
     <div style="flex-grow: 1;"></div>
     <div class="container">
         
@@ -204,7 +205,7 @@
                 });
         });
     </script>
-    <script src="{% static 'js/app.js' %}"></script>
+    <script src="static\js\app.js"></script>
 
     <!-- INFORMATION Section -->
     <div class="info-container">
