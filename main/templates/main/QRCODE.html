@@ -113,9 +113,11 @@
 
 
         const qrCodeHistory = JSON.parse(localStorage.getItem('qrCodeHistory')) || [];
-        qrCodeHistory.unshift({ data, teamNumber }); 
-        localStorage.setItem('qrCodeHistory', JSON.stringify(qrCodeHistory));
+        qrCodeHistory.unshift({ data, teamNumber });
 
+
+        const compressedData = msgpack.encode(qrCodeHistory);
+        localStorage.setItem('qrCodeHistory', JSON.stringify(Array.from(compressedData)));
 
         document.getElementById('go-home').addEventListener('click', function() {
             window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/'; 
