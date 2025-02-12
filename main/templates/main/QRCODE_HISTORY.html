@@ -53,17 +53,6 @@
         .green-button:hover {
             background-color: darkgreen;
         }
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            margin-top: 10px;
-        }
-        input[type="checkbox"] {
-            transform: scale(1.5);
-            cursor: pointer;
-        }
         .delete-button {
             background-color: red;
             color: white;
@@ -85,7 +74,6 @@
     <button class="green-button" onclick="location.assign('https://sirpercivalpercival.github.io/FRC_PITSCOUT/');">Go back to home page</button>
 
     <script>
-    // Load and decode QR code history from localStorage
     function getStoredData() {
         const compressedData = localStorage.getItem('qrCodeHistory');
         if (!compressedData) return [];
@@ -98,7 +86,6 @@
         }
     }
 
-    // Save QR code history to localStorage after compression
     function saveStoredData(data) {
         const compressedData = msgpack.encode(data);
         localStorage.setItem("qrCodeHistory", JSON.stringify(Array.from(compressedData)));
@@ -107,7 +94,6 @@
     const qrCodeHistory = getStoredData();
     const historyContainer = document.getElementById('qr-code-history');
 
-    // Render QR Code history
     function renderQRCodeHistory() {
         historyContainer.innerHTML = '';
 
@@ -128,28 +114,6 @@
             label.classList.add('team-number');
             label.textContent = `Team Number: ${entry.teamNumber}`;
 
-            // Checkbox for marking QR codes
-            const checkboxContainer = document.createElement('div');
-            checkboxContainer.classList.add('checkbox-container');
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = `qr-checkbox-${uniqueID}`;
-            checkbox.checked = entry.checked || false;
-
-            checkbox.addEventListener('change', () => {
-                entry.checked = checkbox.checked;
-                saveStoredData(qrCodeHistory);
-            });
-
-            const checkboxLabel = document.createElement('label');
-            checkboxLabel.htmlFor = `qr-checkbox-${uniqueID}`;
-            checkboxLabel.textContent = 'Mark as checked';
-
-            checkboxContainer.appendChild(checkbox);
-            checkboxContainer.appendChild(checkboxLabel);
-
-            // Delete button
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('delete-button');
             deleteButton.textContent = 'Delete QR Code';
@@ -165,7 +129,6 @@
 
             qrItem.appendChild(qrCanvas);
             qrItem.appendChild(label);
-            qrItem.appendChild(checkboxContainer);
             qrItem.appendChild(deleteButton);
 
             historyContainer.appendChild(qrItem);
