@@ -108,46 +108,57 @@
     const historyContainer = document.getElementById('qr-code-history');
 
     function renderQRCodeHistory() {
-        historyContainer.innerHTML = '';
+    historyContainer.innerHTML = '';
 
-        qrCodeHistory.forEach((entry, index) => {
-            const uniqueID = `${entry.teamNumber}-${entry.timestamp || index}`;
+    qrCodeHistory.forEach((entry, index) => {
+        const uniqueID = `${entry.teamNumber}-${entry.timestamp || index}`;
 
-            const qrItem = document.createElement('div');
-            qrItem.classList.add('qr-item');
+        const qrItem = document.createElement('div');
+        qrItem.classList.add('qr-item');
 
-            const qrCanvas = document.createElement('canvas');
-            new QRious({
-                element: qrCanvas,
-                value: entry.data,
-                size: 150
-            });
-
-            const label = document.createElement('p');
-            label.classList.add('team-number');
-            label.textContent = `Team Number: ${entry.teamNumber}`;
-
-            const deleteButton = document.createElement('button');
-            deleteButton.classList.add('delete-button');
-            deleteButton.textContent = 'Delete QR Code';
-
-            deleteButton.addEventListener('click', () => {
-                const confirmDelete = confirm("Are you sure you want to delete this QR code? This action cannot be undone.");
-                if (confirmDelete) {
-                    qrCodeHistory.splice(index, 1);
-                    saveStoredData(qrCodeHistory);
-                    renderQRCodeHistory();
-                }
-            });
-
-            qrItem.appendChild(qrCanvas);
-            qrItem.appendChild(label);
-            qrItem.appendChild(deleteButton);
-            historyContainer.appendChild(qrItem);
+        const qrCanvas = document.createElement('canvas');
+        new QRious({
+            element: qrCanvas,
+            value: entry.data,
+            size: 150
         });
-    }
 
-    renderQRCodeHistory();
+        // Extract the team number from the stored data
+        let teamNumberText = "Unknown Team";
+        if (entry.teamNumber) {
+            teamNumberText = `Team Number: ${entry.teamNumber}`;
+        } else {
+            // Try extracting the team number from the QR code data
+            const match = entry.data.match(/Team Number: (\d+)/);
+            if (match) {
+                teamNumberText = `Team Number: ${match[1]}`;
+            }
+        }
+
+        const label = document.createElement('p');
+        label.classList.add('team-number');
+        label.textContent = teamNumberText;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = 'Delete QR Code';
+
+        deleteButton.addEventListener('click', () => {
+            const confirmDelete = confirm("Are you sure you want to delete this QR code? This action cannot be undone.");
+            if (confirmDelete) {
+                qrCodeHistory.splice(index, 1);
+                saveStoredData(qrCodeHistory);
+                renderQRCodeHistory();
+            }
+        });
+
+        qrItem.appendChild(qrCanvas);
+        qrItem.appendChild(label);
+        qrItem.appendChild(deleteButton);
+        historyContainer.appendChild(qrItem);
+    });
+}
+renderQRCodeHistory();
 </script>
 
 </body>
