@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code History</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"></script>
+
     <style>
         body {
             background-color: cyan;
@@ -84,87 +86,102 @@
     <button class="green-button" onclick="location.assign('https://sirpercivalpercival.github.io/FRC_PITSCOUT/');">Go back to home page</button>
 
     <script>
+    function getStoredData() {
+        const compressedData = localStorage.getItem('qrCodeHistory');
+        if (!compressedData) return [];
 
-        const qrCodeHistory = JSON.parse(localStorage.getItem('qrCodeHistory')) || [];
-        const checkedStatus = JSON.parse(localStorage.getItem('qrCheckedStatus')) || {};
-        const historyContainer = document.getElementById('qr-code-history');
-
-
-        function renderQRCodeHistory() {
-
-            historyContainer.innerHTML = '';
-
-            qrCodeHistory.forEach((entry, index) => {
-
-                const qrItem = document.createElement('div');
-                qrItem.classList.add('qr-item');
-
-                const qrCanvas = document.createElement('canvas');
-                new QRious({
-                    element: qrCanvas,
-                    value: entry.data,
-                    size: 150
-                });
-
-               
-                const label = document.createElement('p');
-                label.classList.add('team-number');
-                label.textContent = `Team Number: ${entry.teamNumber}`;
-
-             
-                const checkboxContainer = document.createElement('div');
-                checkboxContainer.classList.add('checkbox-container');
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `qr-checkbox-${index}`;
-                checkbox.checked = checkedStatus[index] || false; 
-
-
-                checkbox.addEventListener('change', () => {
-                    checkedStatus[index] = checkbox.checked;
-                    localStorage.setItem('qrCheckedStatus', JSON.stringify(checkedStatus));
-                });
-
-
-                const checkboxLabel = document.createElement('label');
-                checkboxLabel.htmlFor = `qr-checkbox-${index}`;
-                checkboxLabel.textContent = 'Mark as checked';
-
-                checkboxContainer.appendChild(checkbox);
-                checkboxContainer.appendChild(checkboxLabel);
-
-               
-                const deleteButton = document.createElement('button');
-                deleteButton.classList.add('delete-button');
-                deleteButton.textContent = 'Delete QR Code';
-
-   
-                deleteButton.addEventListener('click', () => {
-                    const confirmDelete = confirm("Are you sure you want to delete this QR code? This action cannot be undone.");
-                    if (confirmDelete) {
-
-                        qrCodeHistory.splice(index, 1);
-
-                        localStorage.setItem('qrCodeHistory', JSON.stringify(qrCodeHistory));
-
-                        renderQRCodeHistory();
-                    }
-                });
-
-
-                qrItem.appendChild(qrCanvas);
-                qrItem.appendChild(label);
-                qrItem.appendChild(checkboxContainer);
-                qrItem.appendChild(deleteButton);
-
-
-                historyContainer.appendChild(qrItem);
-            });
+        try {
+            const byteArray = JSON.parse(compressedData);
+            return msgpack.decode(Uint8Array.from(byteArray));
+        } catch (e) {
+            console.error("Error decoding QR Code history:", e);
+            return [];
         }
+    }
 
+    function saveStoredData(data) {
+        const compressedData = msgpack.encode(data);
+        localStorage.setItem("qrCodeHistory", JSON.stringify(Array.from(compressedData)));
+    }
 
-        renderQRCodeHistory();
-    </script>
+    function getCheckedStatus() {
+        return JSON.parse(localStorage.getItem('qrCheckedStatus')) || {};
+    }
+
+    function saveCheckedStatus(status) {
+        localStorage.setItem('qrCheckedStatus', JSON.stringify(status));
+    }
+
+    const qrCodeHistory = getStoredData();
+    const checkedStatus = getCheckedStatus();
+    const historyContainer = document.getElementById('qr-code-history');
+
+    function renderQRCodeHistory() {
+        historyContainer.innerHTML = '';
+
+        qrCodeHistory.forEach((entry, index) => {
+            const uniqueID = `${entry.teamNumber}-${entry.timestamp || index}`;
+
+            const qrItem = document.createElement('div');
+            qrItem.classList.add('qr-item');
+
+            const qrCanvas = document.createElement('canvas');
+            new QRious({
+                element: qrCanvas,
+                value: JSON.stringify(entry),
+                size: 150
+            });
+
+            const label = document.createElement('p');
+            label.classList.add('team-number');
+            label.textContent = `Team Number: ${entry.teamNumber}`;
+
+            const checkboxContainer = document.createElement('div');
+            checkboxContainer.classList.add('checkbox-container');
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `qr-checkbox-${uniqueID}`;
+            checkbox.checked = checkedStatus[uniqueID] || false;
+
+            checkbox.addEventListener('change', () => {
+                checkedStatus[uniqueID] = checkbox.checked;
+                saveCheckedStatus(checkedStatus);
+            });
+
+            const checkboxLabel = document.createElement('label');
+            checkboxLabel.htmlFor = `qr-checkbox-${uniqueID}`;
+            checkboxLabel.textContent = 'Mark as checked';
+
+            checkboxContainer.appendChild(checkbox);
+            checkboxContainer.appendChild(checkboxLabel);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = 'Delete QR Code';
+
+            deleteButton.addEventListener('click', () => {
+                if (confirm("Are you sure you want to delete this QR code? This action cannot be undone.")) {
+                    const updatedHistory = qrCodeHistory.filter((_, i) => i !== index);
+                    saveStoredData(updatedHistory);
+
+                    delete checkedStatus[uniqueID];
+                    saveCheckedStatus(checkedStatus);
+
+                    renderQRCodeHistory();
+                }
+            });
+
+            qrItem.appendChild(qrCanvas);
+            qrItem.appendChild(label);
+            qrItem.appendChild(checkboxContainer);
+            qrItem.appendChild(deleteButton);
+
+            historyContainer.appendChild(qrItem);
+        });
+    }
+
+    renderQRCodeHistory();
+</script>
 </body>
 </html>
