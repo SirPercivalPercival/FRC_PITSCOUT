@@ -80,7 +80,7 @@
 
     try {
         const byteArray = JSON.parse(compressedData);
-        return msgpack.decode(Uint8Array.from(byteArray)); // ✅ Now correctly decoding MessagePack
+        return msgpack.decode(Uint8Array.from(byteArray)); 
     } catch (e) {
         console.error("Error decoding QR Code history:", e);
         return [];
