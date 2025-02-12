@@ -75,17 +75,19 @@
 
     <script>
     function getStoredData() {
-    const compressedData = localStorage.getItem('qrCodeHistory');
-    if (!compressedData) return [];
+    const storedData = localStorage.getItem('qrCodeHistory');
+    if (!storedData) return []; // Ensure an array is returned
 
     try {
-        const byteArray = JSON.parse(compressedData);
-        return msgpack.decode(Uint8Array.from(byteArray)); 
+        const qrCodeHistory = JSON.parse(storedData);
+        if (!Array.isArray(qrCodeHistory)) throw new Error("Stored data is not an array");
+        return qrCodeHistory;
     } catch (e) {
-        console.error("Error decoding QR Code history:", e);
+        console.error("Error retrieving QR Code history:", e);
         return [];
     }
 }
+
 
     function saveStoredData(data) {
         if (!Array.isArray(data)) {
