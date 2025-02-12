@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR CODE</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"></script>
     <script src="node_modules/qrious/dist/qrious.umd.js"></script>
 
     <style>
@@ -119,5 +121,32 @@
             window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/'; 
         });
     </script>
+
+    <script>
+    function loadData() {
+        const compressedData = localStorage.getItem("scoutingData");
+        if (!compressedData) {
+            console.error("No data found.");
+            return;
+        }
+
+        // Convert back from stringified array
+        const byteArray = JSON.parse(compressedData);
+        const data = msgpack.decode(Uint8Array.from(byteArray));
+
+        console.log("Decoded Data:", data);
+
+        // Generate QR code with the structured JSON
+        const qr = new QRious({
+            element: document.getElementById('qr-code'),
+            value: JSON.stringify(data),
+            size: 200
+        });
+
+        document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", loadData);
+</script>
 </body>
 </html>
