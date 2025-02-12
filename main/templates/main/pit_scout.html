@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"></script>
     <style>
         .fade-in {
             opacity: 0; 
@@ -736,6 +737,43 @@
             };
 
             window.addEventListener("beforeunload", saveFormData);
+
+        <script>
+    function collectData() {
+        const data = {
+            scouterName: document.getElementById("scouter-name").value || "N/A",
+            teamNumber: document.getElementById("team-number").value || "N/A",
+            driverExperience: document.getElementById("driver-experience")?.value || "N/A",
+            driveType: document.querySelector('input[name="driveType"]:checked')?.value || "N/A",
+            mechanism: document.querySelector('input[name="mechanism"]:checked')?.value || document.getElementById("other-mechanism")?.value || "N/A",
+            intake: document.querySelector('input[name="Intake"]:checked')?.value || "N/A",
+            hang: document.querySelector('input[name="Hang"]:checked')?.value || "N/A",
+            confidence: document.querySelector('input[name="confidence"]:checked')?.value || "N/A",
+            reefCapability: Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value) || [],
+            visionType: Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value) || [],
+            gearRatio: {
+                first: document.getElementById("gear-ratio-1")?.value || "N/A",
+                second: document.getElementById("gear-ratio-2")?.value || "N/A"
+            },
+            algaeCapability: document.querySelector('input[name="algaeCapability"]:checked')?.value || "N/A",
+            preload: document.querySelector('input[name="preload"]:checked')?.value || "N/A",
+            weight: {
+                kg: document.getElementById("weight-kg")?.value || "N/A",
+                lbs: document.getElementById("weight-lbs")?.value || "N/A"
+            }
+        };
+
+        // Compress JSON using msgpack
+        const compressedData = msgpack.encode(data);
+        localStorage.setItem("scoutingData", JSON.stringify(Array.from(compressedData)));
+    }
+
+    // Attach function to existing submit button
+    document.querySelector('a[href*="https://sirpercivalpercival.github.io/FRC_PITSCOUT/main/templates/main/QRCODE.html"]').addEventListener("click", collectData);
+</script>
+
+
+        
        
     
     </script>
