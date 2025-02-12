@@ -549,6 +549,27 @@
     <a id="home-button" href="https://sirpercivalpercival.github.io/FRC_PITSCOUT/main/templates/main/QRCODE.html" class="home-button">Submit</a>
 
     <script>
+
+        function toggleGearRatioContainer() {
+            const gearRatioContainer = document.getElementById('gear-ratio-container');
+            const swerveDriveSelected = document.getElementById('swerve-drive').checked;
+
+            if (swerveDriveSelected) {
+                gearRatioContainer.style.display = 'block';
+            } else {
+                gearRatioContainer.style.display = 'none';
+            }
+        }
+
+       
+        document.querySelectorAll('input[name="driveType"]').forEach(radio => {
+            radio.addEventListener('change', toggleGearRatioContainer);
+        });
+
+       
+        document.addEventListener('DOMContentLoaded', toggleGearRatioContainer);
+
+        
         document.addEventListener('DOMContentLoaded', function () {
 
             const weightKgInput = document.getElementById('weight-kg');
