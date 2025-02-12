@@ -77,9 +77,12 @@
     function getStoredData() {
         const compressedData = localStorage.getItem('qrCodeHistory');
         if (!compressedData) return [];
+
         try {
             const byteArray = JSON.parse(compressedData);
-            return msgpack.decode(Uint8Array.from(byteArray));
+            if (!Array.isArray(byteArray)) return []; // Ensure it's an array
+
+            return msgpack.decode(Uint8Array.from(byteArray)) || [];
         } catch (e) {
             console.error("Error decoding QR Code history:", e);
             return [];
@@ -87,11 +90,21 @@
     }
 
     function saveStoredData(data) {
+        if (!Array.isArray(data)) {
+            console.error("Attempted to save non-array data to qrCodeHistory.");
+            return;
+        }
+
         const compressedData = msgpack.encode(data);
         localStorage.setItem("qrCodeHistory", JSON.stringify(Array.from(compressedData)));
     }
 
     const qrCodeHistory = getStoredData();
+    if (!Array.isArray(qrCodeHistory)) {
+        console.error("qrCodeHistory is not an array, resetting storage.");
+        localStorage.removeItem("qrCodeHistory"); // Clear corrupted data
+    }
+
     const historyContainer = document.getElementById('qr-code-history');
 
     function renderQRCodeHistory() {
@@ -130,12 +143,12 @@
             qrItem.appendChild(qrCanvas);
             qrItem.appendChild(label);
             qrItem.appendChild(deleteButton);
-
             historyContainer.appendChild(qrItem);
         });
     }
 
     renderQRCodeHistory();
 </script>
+
 </body>
 </html>
