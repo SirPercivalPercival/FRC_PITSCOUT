@@ -148,9 +148,7 @@
 
     document.addEventListener("DOMContentLoaded", loadData);
 
-        const qrCodeHistory = JSON.parse(localStorage.getItem('qrCodeHistory')) || [];
-        qrCodeHistory.unshift({ data, teamNumber }); 
-        localStorage.setItem('qrCodeHistory', JSON.stringify(qrCodeHistory));
+        
 
 </script>
 </body>
