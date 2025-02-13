@@ -76,7 +76,7 @@
     <script>
     function getStoredData() {
     const storedData = localStorage.getItem('qrCodeHistory');
-    if (!storedData) return []; // Ensure an array is returned
+    if (!storedData) return []; 
 
     try {
         const qrCodeHistory = JSON.parse(storedData);
@@ -102,7 +102,7 @@
     const qrCodeHistory = getStoredData();
     if (!Array.isArray(qrCodeHistory)) {
         console.error("qrCodeHistory is not an array, resetting storage.");
-        localStorage.removeItem("qrCodeHistory"); // Clear corrupted data
+        localStorage.removeItem("qrCodeHistory"); 
     }
 
     const historyContainer = document.getElementById('qr-code-history');
@@ -123,12 +123,12 @@
             size: 150
         });
 
-        // Extract the team number from the stored data
+        
         let teamNumberText = "Unknown Team";
         if (entry.teamNumber) {
             teamNumberText = `Team Number: ${entry.teamNumber}`;
         } else {
-            // Try extracting the team number from the QR code data
+            
             const match = entry.data.match(/Team Number: (\d+)/);
             if (match) {
                 teamNumberText = `Team Number: ${match[1]}`;
