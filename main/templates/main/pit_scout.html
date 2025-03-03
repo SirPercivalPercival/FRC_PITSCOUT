@@ -35,7 +35,7 @@
     .mechanism-container, .intake-container, .algae-capability-container,
     .reef-capability-container, .preload-container, .hang-container,
     .vision-container, .weight-container, .dimensions-container,
-    .confidence-container, .experience-container {
+    .confidence-container, .experience-container, .reef-capability-container {
         background: rgba(255, 255, 255, 0.9);
         border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -49,7 +49,7 @@
     .mechanism-container h3, .intake-container h3, .algae-capability-container h3,
     .reef-capability-container h3, .preload-container h3, .hang-container h3,
     .vision-container h3, .weight-container h3, .dimensions-container h3,
-    .confidence-container h3, .experience-container h3 {
+    .confidence-container h3, .experience-container h3, .reef-capability-container h3 {
         color: #2980b9;
         font-size: 28px;
         margin-bottom: 15px;
@@ -58,15 +58,62 @@
     }
 
     .radio-button {
-        padding: 8px 12px;
+        display: block;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 12px 15px;
         margin: 8px 0;
-        background: rgba(52, 152, 219, 0.1);
-        border-radius: 6px;
-        transition: background 0.3s ease;
+        background: rgba(52, 152, 219, 0.08);
+        border-radius: 8px;
+        position: relative;
     }
 
+    /* Hide the actual radio/checkbox and style the label */
+    .radio-button input[type="radio"],
+    .radio-button input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        height: 0;
+        width: 0;
+    }
+
+    /* Create custom radio/checkbox indicator */
+    .radio-button label::before {
+        content: '';
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        margin-right: 12px;
+        border: 2px solid #3498db;
+        border-radius: 50%;
+        vertical-align: middle;
+    }
+
+    /* Checkbox specific styling */
+    .radio-button input[type="checkbox"] + label::before {
+        border-radius: 4px;
+    }
+
+    /* Show check when selected */
+    .radio-button input:checked + label::before {
+        background: #3498db;
+        box-shadow: inset 0 0 0 3px white;
+    }
+
+    /* Hover effects */
     .radio-button:hover {
-        background: rgba(52, 152, 219, 0.2);
+        background: rgba(52, 152, 219, 0.15);
+    }
+
+    /* Style the labels */
+    .radio-button label {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin: 0;
+        font-size: 18px;
     }
 
     input[type="text"], input[type="number"], select {
@@ -172,18 +219,18 @@ select {
     
     <div class="chassis-container">
         <h3>Chassis:</h3>
-        <div class="radio-button">
+        <label class="radio-button">
             <input type="radio" name="driveType" value="Swerve Drive" id="swerve-drive" required>
             <label for="swerve-drive">Swerve Drive</label>
-        </div>
-        <div class="radio-button">
+        </label>
+        <label class="radio-button">
             <input type="radio" name="driveType" value="Mecanum" id="mecanum-drive" required>
             <label for="mecanum-drive">Mecanum</label>
-        </div>
-        <div class="radio-button">
+        </label>
+        <label class="radio-button">
             <input type="radio" name="driveType" value="Tank Drive" id="tank-drive" required>
             <label for="tank-drive">Tank Drive</label>
-        </div>
+        </label>
     </div>
 
     
@@ -208,46 +255,46 @@ select {
 
     <div class="mechanism-container">
         <h3>Mechanism:</h3>
-        <div class="radio-button">
+        <label class="radio-button">
             <input type="radio" name="mechanism" value="Arm" id="arm-mechanism">
             <label for="arm-mechanism">Arm</label>
-        </div>
-        <div class="radio-button">
+        </label>
+        <label class="radio-button">
             <input type="radio" name="mechanism" value="Elevator" id="elevator-mechanism">
             <label for="elevator-mechanism">Elevator </label>
-        </div>
-        <div class="radio-button">
+        </label>
+        <label class="radio-button">
             <label for="other-mechanism"> Others:</label>
             <input type="text" id="other-mechanism" class="gear-ratio-input" placeholder="Enter other mechanism">
-        </div>
+        </label>
     </div>
 
     
     <div class="intake-container">
         <h3>Intake:</h3>
-        <div class="radio-button">
+        <label class="radio-button">
             <input type="radio" name="Intake" value="Share" id="share-intake">
             <label for="share-intake">Algae+Coral</label>
-        </div>
-        <div class="radio-button">
+        </label>
+        <label class="radio-button">
             <input type="radio" name="Intake" value="Independent" id="independent-intake">
             <label for="independent-intake">Seperated</label>
-        </div>
+        </label>
     </div>
 
     
     <div class="algae-capability-container">
         <h3>Algae Capability:</h3>
-        <div class="algae-capability-options">
-            <div class="algae-capability-option">
+        <label class="algae-capability-options">
+            <label class="algae-capability-option">
                 <input type="checkbox" name="algaeCapability" value="Processor" id="processor" required>
                 <label for="processor">Processor</label>
-            </div>
-            <div class="algae-capability-option">
+            </label>
+            <label class="algae-capability-option">
                 <input type="checkbox" name="algaeCapability" value="Net" id="net" required>
                 <label for="net">Net</label>
-            </div>
-        </div>
+            </label>
+        </label>
     </div>
 
     <script>
@@ -281,42 +328,42 @@ select {
 
     <div class="reef-capability-container">
         <h3>Reef Capability:</h3>
-        <div class="reef-capability-options">
-            <div class="reef-capability-option">
+        <label class="reef-capability-options">
+            <label class="reef-capability-option">
                 <input type="checkbox" name="reefCapability" value="L1" id="l1" required>
                 <label for="l1">L1</label>
-            </div>
-            <div class="reef-capability-option">
+            </label>
+            <label class="reef-capability-option">
                 <input type="checkbox" name="reefCapability" value="L2" id="l2" required>
                 <label for="l2">L2</label>
-            </div>
-            <div class="reef-capability-option">
+            </label>
+            <label class="reef-capability-option">
                 <input type="checkbox" name="reefCapability" value="L3" id="l3" required>
                 <label for="l3">L3</label>
-            </div>
-            <div class="reef-capability-option">
+            </label>
+            <label class="reef-capability-option">
                 <input type="checkbox" name="reefCapability" value="L4" id="l4" required>
                 <label for="l4">L4</label>
-            </div>
-        </div>
+            </label>
+        </label>
     </div>
 
     <div class="preload-container">
         <h3>PreLoad:</h3>
-        <div class="preload-options">
-            <div class="preload-option">
+        <label class="preload-options">
+            <label class="preload-option">
                 <input type="checkbox" name="preload" value="Algae" id="preload-algae" required>
                 <label for="preload-algae">Algae</label>
-            </div>
-            <div class="preload-option">
+            </label>
+            <label class="preload-option">
                 <input type="checkbox" name="preload" value="Coral" id="preload-coral" required>
                 <label for="preload-coral">Coral</label>
-            </div>
-            <div class="preload-option">
+            </label>
+            <label class="preload-option">
                 <input type="checkbox" name="preload" value="Remove Algae from Branch" id="preload-remove-algae" required>
                 <label for="preload-remove-algae">Remove Algae from Branch</label>
-            </div>
-        </div>
+            </label>
+        </label>
     </div>
     
     <script>
@@ -353,24 +400,24 @@ select {
 
     <div class="hang-container">
         <h3>Hang:</h3>
-        <div class="hang-options">
-            <div class="radio-button">
+        <label class="hang-options">
+            <label class="radio-button">
                 <input type="radio" name="Hang" value="None" id="hang-none">
                 <label for="hang-none">None</label>
-            </div>
-            <div class="radio-button">
+            </label>
+            <label class="radio-button">
                 <input type="radio" name="Hang" value="Park" id="hang-park">
                 <label for="hang-park">Park</label>
-            </div>
-            <div class="radio-button">
+            </label>
+            <label class="radio-button">
                 <input type="radio" name="Hang" value="Shallow" id="hang-shallow">
                 <label for="hang-shallow">Shallow</label>
-            </div>
-            <div class="radio-button">
+            </label>
+            <label class="radio-button">
                 <input type="radio" name="Hang" value="Deep" id="hang-deep">
                 <label for="hang-deep">Deep</label>
-            </div>
-        </div>
+            </label>
+        </label>
     </div>
     
 <script>
@@ -403,51 +450,51 @@ select {
 
     <div class="vision-container">
         <h3>Vision:</h3>
-        <div class="vision-options">
-            <div class="radio-button">
+        <label class="vision-options">
+            <label class="radio-button">
                 <input type="checkbox" name="visionType" value="Auto-Alignment" id="auto-alignment" required>
                 <label for="auto-alignment">Auto-Alignment</label>
-            </div>
-            <div class="radio-button">
+            </label>
+            <label class="radio-button">
                 <input type="checkbox" name="visionType" value="Field-Positioning" id="field-positioning" required>
                 <label for="field-positioning">Field-Positioning</label>
-            </div>
-        </div> 
+            </label>
+        </label> 
     </div>
 
 
     <div class="weight-container">
         <h3>Weight of Robot</h3>
-        <div class="weight-inputs">
+        <label class="weight-inputs">
             <label for="weight-kg">kg:</label>
             <input type="number" id="weight-kg" placeholder="Enter weight in kg" step="0.01" min="0">
             
             <label for="weight-lbs">lbs:</label>
             <input type="number" id="weight-lbs" placeholder="Enter weight in lbs" step="0.01" min="0">
-        </div>
+        </label>
     </div>
     
 <div class="dimensions-container">
     <h3>Dimensions of Robot</h3>
-    <div class="dimensions-inputs">
+    <label class="dimensions-inputs">
         <label for="width-input">Width (in):</label>
         <input type="number" id="width-input" placeholder="Enter width" step="0.01" min="0">
         
         <label for="length-input">Length (in):</label>
         <input type="number" id="length-input" placeholder="Enter length" step="0.01" min="0">
-    </div>
+    </label>
 </div>
 
     <div class="confidence-container">
         <h3>Is Human Confident in scoring algae to net?</h3>
-        <div class="radio-button">
+        <label class="radio-button">
             <input type="radio" name="confidence" value="Yes" id="confidence-yes" required>
             <label for="confidence-yes">Yes</label>
-        </div>
-        <div class="radio-button">
+        </label>
+        <label class="radio-button">
             <input type="radio" name="confidence" value="No" id="confidence-no" required>
             <label for="confidence-no">No</label>
-        </div>
+        </label>
     </div>
 
 
