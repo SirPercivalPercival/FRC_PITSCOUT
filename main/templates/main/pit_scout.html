@@ -228,15 +228,13 @@ select {
 
    
     <div class="info-container">
-        <h3>INFORMATION</h3>
-        <label for="scouter-name">Scouter Name:</label>
-        <input type="text" id="scouter-name" class="info-input" value="" readonly>
+    <h3>INFORMATION</h3>
+    <label for="scouter-name">Scouter Name:</label>
+    <input type="text" id="scouter-name" class="info-input" required>
 
-        <label for="team-number">Team Number:</label>
-        <input type="number" id="team-number" class="info-input" required>
-
-        
-    </div>
+    <label for="team-number">Team Number:</label>
+    <input type="number" id="team-number" class="info-input" required>
+</div>
 
     
     <div class="chassis-container">
@@ -708,10 +706,11 @@ function saveFormData() {
 
 function loadFormData() {
     const savedData = JSON.parse(localStorage.getItem("formData") || "{}");
+    const scouterName = localStorage.getItem("scouterName") || savedData.scouterName || '';
      const teamNumber = localStorage.getItem("teamNumber") || savedData.teamNumber || '';
 
     // Load basic fields
-    document.getElementById("scouter-name").value = savedData.scouterName || '';
+    document.getElementById("scouter-name").value = scouterName;
     document.getElementById("team-number").value = teamNumber;
 
     document.getElementById("gear-ratio-1").value = savedData.gearRatio1 || 'L1';
