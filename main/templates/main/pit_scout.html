@@ -239,6 +239,30 @@
             gap: 10px; 
         }
 
+        .dimensions-container {
+        border: 2px solid black;
+        padding: 20px;
+        margin: 20px auto;
+        width: 600px;
+        box-sizing: border-box;
+    }
+    
+    .dimensions-inputs {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .dimensions-inputs label {
+        font-size: 16px;
+    }
+    
+    .dimensions-inputs input {
+        width: 120px;
+        padding: 5px;
+        font-size: 16px;
+    }
+
     </style>
 </head>
 <body class="fade-in">
@@ -737,6 +761,69 @@
             };
 
             window.addEventListener("beforeunload", saveFormData);
+
+        <div class="dimensions-container">
+    <h3>Dimensions of Robot</h3>
+    <div class="dimensions-inputs">
+        <label for="width-input">Width (in):</label>
+        <input type="number" id="width-input" placeholder="Enter width" step="0.01" min="0">
+        
+        <label for="length-input">Length (in):</label>
+        <input type="number" id="length-input" placeholder="Enter length" step="0.01" min="0">
+    </div>
+</div>
+
+<!-- Add this JavaScript -->
+<script>
+    // Save dimensions to localStorage
+    function saveDimensions() {
+        const width = document.getElementById('width-input').value;
+        const length = document.getElementById('length-input').value;
+        
+        localStorage.setItem('robotWidth', width);
+        localStorage.setItem('robotLength', length);
+    }
+
+    // Load dimensions from localStorage
+    function loadDimensions() {
+        const savedWidth = localStorage.getItem('robotWidth');
+        const savedLength = localStorage.getItem('robotLength');
+        
+        if (savedWidth) document.getElementById('width-input').value = savedWidth;
+        if (savedLength) document.getElementById('length-input').value = savedLength;
+    }
+
+    // Event listeners
+    document.getElementById('width-input').addEventListener('input', saveDimensions);
+    document.getElementById('length-input').addEventListener('input', saveDimensions);
+    document.addEventListener('DOMContentLoaded', loadDimensions);
+
+    // Add to existing saveFormData function
+    function saveFormData() {
+        // Existing code...
+        localStorage.setItem("width", document.getElementById("width-input").value);
+        localStorage.setItem("length", document.getElementById("length-input").value);
+    }
+
+    // Add to existing loadFormData function
+    function loadFormData() {
+        // Existing code...
+        document.getElementById("width-input").value = localStorage.getItem("width") || '';
+        document.getElementById("length-input").value = localStorage.getItem("length") || '';
+    }
+
+    // Update collectData function
+    function collectData() {
+        const data = {
+            // Existing properties...
+            dimensions: {
+                width: document.getElementById("width-input").value || "N/A",
+                length: document.getElementById("length-input").value || "N/A"
+            }
+        };
+        
+    }
+</script>
 
         
 
