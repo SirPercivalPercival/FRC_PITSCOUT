@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR CODE</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"></script>
     <script src="node_modules/qrious/dist/qrious.umd.js"></script>
 
     <style>
@@ -71,15 +72,17 @@
         const driveType = urlParams.get('driveType') || 'N/A';
         const mechanism = urlParams.get('mechanism') || 'N/A';
         const intake = urlParams.get('intake') || 'N/A';
+        const hang = urlParams.get('hang') || 'N/A';
         const confidence = urlParams.get('confidence') || 'N/A';
         const reefCapability = urlParams.get('reefCapability') || 'N/A';
         const visionType = urlParams.get('visionType') || 'N/A';
-const weight = urlParams.get('weight') || 'N/A';
-const dimensions = urlParams.get('dimensions') || 'N/A';
+        const weight = urlParams.get('weight') || 'N/A';
+        const dimensions = urlParams.get('dimensions') || 'N/A';
         const gearRatio1 = urlParams.get('gearRatio1') || 'N/A';
         const gearRatio2 = urlParams.get('gearRatio2') || 'N/A';
         const algaeCapability = urlParams.get('algaeCapability') || 'N/A';
         const preload = urlParams.get('preload') || 'N/A';
+        
 
  
         console.log("Scouter Name:", scouterName);
@@ -100,7 +103,7 @@ const dimensions = urlParams.get('dimensions') || 'N/A';
         console.log("PreLoad:", preload);
 
 
-        const data = `Scouter Name: ${scouterName}, Team Number: ${teamNumber}, Chassis: ${driveType}, Gear Ratio: ${gearRatio1}:${gearRatio2}, Mechanism: ${mechanism}, Intake: ${intake}, Algae Capability: ${algaeCapability}, Reef Capability: ${reefCapability}, PreLoad: ${preload}, Vision Type: ${visionType}, weight: ${weight}, dimensions: ${dimensions}, Is Human Confident in Scoring Algae: ${confidence}, Driver Experience: ${driverExperience}`;
+        const data = `Scouter Name: ${scouterName}, Team Number: ${teamNumber}, Chassis: ${driveType}, Gear Ratio: ${gearRatio1}:${gearRatio2}, Mechanism: ${mechanism}, Intake: ${intake}, Algae Capability: ${algaeCapability}, Reef Capability: ${reefCapability}, PreLoad: ${preload}, Vision Type: ${visionType}, Weight: ${weight}, Dimension: ${dimensions}, Is Human Confident in Scoring Algae: ${confidence}, Driver Experience: ${driverExperience}`;
 
         const qr = new QRious({
             element: document.getElementById('qr-code'),
@@ -112,13 +115,42 @@ const dimensions = urlParams.get('dimensions') || 'N/A';
 
 
         const qrCodeHistory = JSON.parse(localStorage.getItem('qrCodeHistory')) || [];
-        qrCodeHistory.unshift({ data, teamNumber }); 
+        qrCodeHistory.unshift({ data, teamNumber });
         localStorage.setItem('qrCodeHistory', JSON.stringify(qrCodeHistory));
 
-
         document.getElementById('go-home').addEventListener('click', function() {
-            window.location.href = '/'; 
+            window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/'; 
         });
     </script>
+
+    <script>
+    function loadData() {
+        const compressedData = localStorage.getItem("scoutingData");
+        if (!compressedData) {
+            console.error("No data found.");
+            return;
+        }
+
+        // Convert back from stringified array
+        const byteArray = JSON.parse(compressedData);
+        const data = msgpack.decode(Uint8Array.from(byteArray));
+
+        console.log("Decoded Data:", data);
+
+        // Generate QR code with the structured JSON
+        const qr = new QRious({
+            element: document.getElementById('qr-code'),
+            value: JSON.stringify(data),
+            size: 200
+        });
+
+        document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", loadData);
+
+        
+
+</script>
 </body>
 </html>
