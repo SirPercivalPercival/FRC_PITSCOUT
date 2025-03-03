@@ -672,110 +672,111 @@ function handleMechanismInteraction() {
                 document.getElementById('arm-mechanism').checked = false;
                 document.getElementById('elevator-mechanism').checked = false;
             }
+                </script>
     
             
-            function saveFormData() {
-                const scouterName = document.getElementById("scouter-name").value;
-                const teamNumber = document.getElementById("team-number").value;
-                
-    
-                localStorage.setItem("scouterName", scouterName);
-                localStorage.setItem("teamNumber", teamNumber);
-                
-    
+           <script>
+// Consolidated save/load system
+function saveFormData() {
+    const formData = {
+        scouterName: document.getElementById("scouter-name").value,
+        teamNumber: document.getElementById("team-number").value,
+        driveType: document.querySelector('input[name="driveType"]:checked')?.value || '',
+        gearRatio1: document.getElementById("gear-ratio-1").value,
+        gearRatio2: document.getElementById("gear-ratio-2").value,
+        mechanism: document.querySelector('input[name="mechanism"]:checked')?.value || '',
+        otherMechanism: document.getElementById("other-mechanism").value,
+        intake: document.querySelector('input[name="Intake"]:checked')?.value || '',
+        reefCapability: Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value),
+        visionType: Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value),
+        hang: document.querySelector('input[name="Hang"]:checked')?.value || '',
+        confidence: document.querySelector('input[name="confidence"]:checked')?.value || '',
+        driverExperience: document.getElementById("driver-experience").value,
+        weightKg: document.getElementById("weight-kg").value,
+        weightLbs: document.getElementById("weight-lbs").value,
+        width: document.getElementById("width-input").value,
+        length: document.getElementById("length-input").value,
+        processorChecked: document.getElementById("processor").checked,
+        netChecked: document.getElementById("net").checked,
+        preloadAlgaeChecked: document.getElementById("preload-algae").checked,
+        preloadCoralChecked: document.getElementById("preload-coral").checked,
+        preloadRemoveAlgaeChecked: document.getElementById("preload-remove-algae").checked
+    };
 
-                localStorage.setItem("driveType", document.querySelector('input[name="driveType"]:checked')?.value || '');
-                localStorage.setItem("gearRatio1", document.getElementById("gear-ratio-1").value);
-                localStorage.setItem("gearRatio2", document.getElementById("gear-ratio-2").value);
-                localStorage.setItem("mechanism", document.querySelector('input[name="mechanism"]:checked')?.value || '');
-                localStorage.setItem("intake", document.querySelector('input[name="Intake"]:checked')?.value || '');
-                localStorage.setItem("reefCapability", Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value).join(','));
-                localStorage.setItem("visionType", Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value).join(','));
-                localStorage.setItem("hang", document.querySelector('input[name="Hang"]:checked')?.value || '');
-                localStorage.setItem("confidence", document.querySelector('input[name="confidence"]:checked')?.value || '');
-                localStorage.setItem("driverExperience", document.getElementById("driver-experience").value);
-                localStorage.setItem("width", document.getElementById("width-input").value);
-                localStorage.setItem("length", document.getElementById("length-input").value);
-            }
+    localStorage.setItem("formData", JSON.stringify(formData));
+}
 
-            function loadFormData() {
-                document.getElementById("scouter-name").value = localStorage.getItem("scouterName") || '';
-                document.getElementById("team-number").value = localStorage.getItem("teamNumber") || '';
-                document.getElementById("width-input").value = localStorage.getItem("width") || '';
-                document.getElementById("length-input").value = localStorage.getItem("length") || '';
-                
+function loadFormData() {
+    const savedData = JSON.parse(localStorage.getItem("formData") || "{}");
 
-                const driveType = localStorage.getItem("driveType");
-                if (driveType) {
-                    document.querySelector(`input[name="driveType"][value="${driveType}"]`).checked = true;
-                }
-    
-                document.getElementById("gear-ratio-1").value = localStorage.getItem("gearRatio1") || 'L1';
-                document.getElementById("gear-ratio-2").value = localStorage.getItem("gearRatio2") || 'L1';
-    
-                const otherMechanism = localStorage.getItem('otherMechanism');
-        if (otherMechanism) {
-            document.getElementById('other-mechanism').value = otherMechanism;
-            document.getElementById('arm-mechanism').checked = false;
-            document.getElementById('elevator-mechanism').checked = false;
-        }
+    // Load basic fields
+    document.getElementById("scouter-name").value = savedData.scouterName || '';
+    document.getElementById("team-number").value = savedData.teamNumber || '';
+    document.getElementById("gear-ratio-1").value = savedData.gearRatio1 || 'L1';
+    document.getElementById("gear-ratio-2").value = savedData.gearRatio2 || 'L1';
+    document.getElementById("driver-experience").value = savedData.driverExperience || '';
+    document.getElementById("weight-kg").value = savedData.weightKg || '';
+    document.getElementById("weight-lbs").value = savedData.weightLbs || '';
+    document.getElementById("width-input").value = savedData.width || '';
+    document.getElementById("length-input").value = savedData.length || '';
+    document.getElementById("other-mechanism").value = savedData.otherMechanism || '';
+
+    // Load radio buttons
+    const setRadioValue = (name, value) => {
+        const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
+        if (radio) radio.checked = true;
+    };
+    setRadioValue('driveType', savedData.driveType);
+    setRadioValue('mechanism', savedData.mechanism);
+    setRadioValue('Intake', savedData.intake);
+    setRadioValue('Hang', savedData.hang);
+    setRadioValue('confidence', savedData.confidence);
+
+    // Load checkboxes
+    const setCheckboxes = (name, values) => {
+        document.querySelectorAll(`input[name="${name}"]`).forEach(checkbox => {
+            checkbox.checked = values.includes(checkbox.value);
+        });
+    };
+    setCheckboxes('reefCapability', savedData.reefCapability || []);
+    setCheckboxes('visionType', savedData.visionType || []);
+
+    // Load special checkboxes
+    document.getElementById("processor").checked = savedData.processorChecked || false;
+    document.getElementById("net").checked = savedData.netChecked || false;
+    document.getElementById("preload-algae").checked = savedData.preloadAlgaeChecked || false;
+    document.getElementById("preload-coral").checked = savedData.preloadCoralChecked || false;
+    document.getElementById("preload-remove-algae").checked = savedData.preloadRemoveAlgaeChecked || false;
+
+    // Handle mechanism
+    if (savedData.otherMechanism) {
+        document.getElementById('arm-mechanism').checked = false;
+        document.getElementById('elevator-mechanism').checked = false;
     }
-    
-                const intake = localStorage.getItem("intake");
-                if (intake) {
-                    document.querySelector(`input[name="Intake"][value="${intake}"]`).checked = true;
-                }
-    
-                const reefCapability = localStorage.getItem("reefCapability")?.split(',') || [];
-                reefCapability.forEach(value => {
-                    const checkbox = document.querySelector(`input[name="reefCapability"][value="${value}"]`);
-                    if (checkbox) {
-                        checkbox.checked = true;
-                    }
-                });
-    
-                const visionType = localStorage.getItem("visionType")?.split(',') || [];
-                visionType.forEach(value => {
-                    const checkbox = document.querySelector(`input[name="visionType"][value="${value}"]`);
-                    if (checkbox) {
-                        checkbox.checked = true;
-                    }
-                });
-    
-                const hang = localStorage.getItem("hang");
-                if (hang) {
-                    document.querySelector(`input[name="Hang"][value="${hang}"]`).checked = true;
-                }
-    
-                const confidence = localStorage.getItem("confidence");
-                if (confidence) {
-                    document.querySelector(`input[name="confidence"][value="${confidence}"]`).checked = true;
-                }
-    
-                document.getElementById("driver-experience").value = localStorage.getItem("driverExperience") || '';
-            }
-    
+}
 
-            window.onload = function () {
-                loadFormData();
-                d3.select("body").style("opacity", 1);
-            };
+// Event listeners
+document.querySelectorAll('input, select').forEach(element => {
+    element.addEventListener('change', saveFormData);
+});
 
-            window.addEventListener("beforeunload", saveFormData);
-        document.addEventListener('DOMContentLoaded', handleMechanismInteraction);
+// Initial setup
+document.addEventListener('DOMContentLoaded', () => {
+    loadFormData();
+    handleMechanismInteraction();
+    toggleGearRatioContainer();
+    d3.select("body").style("opacity", 1);
+});
 
-       
-
-    
+// Periodic saving
+setInterval(saveFormData, 5000);
+window.addEventListener('beforeunload', saveFormData);
 </script>
 
-        
-
 
         
        
-    
-    </script>
+
 
     <script>
     function collectData() {
