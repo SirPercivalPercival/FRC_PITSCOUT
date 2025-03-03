@@ -154,6 +154,28 @@
         color: #34495e;
     }
 
+        .preload-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .preload-option {
+        width: 100%;
+    }
+    
+    /* Fix Others Mechanism styling */
+    .other-mechanism-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    #other-mechanism {
+        flex-grow: 1;
+    }
+
         .radio-button, .algae-capability-option, .preload-option {
     padding: 12px 15px;
     margin: 10px 0;
@@ -254,20 +276,51 @@ select {
     </div>
 
     <div class="mechanism-container">
-        <h3>Mechanism:</h3>
-        <label class="radio-button">
-            <input type="radio" name="mechanism" value="Arm" id="arm-mechanism">
-            <label for="arm-mechanism">Arm</label>
-        </label>
-        <label class="radio-button">
-            <input type="radio" name="mechanism" value="Elevator" id="elevator-mechanism">
-            <label for="elevator-mechanism">Elevator </label>
-        </label>
-        <label class="radio-button">
-            <label for="other-mechanism"> Others:</label>
-            <input type="text" id="other-mechanism" class="gear-ratio-input" placeholder="Enter other mechanism">
-        </label>
+    <h3>Mechanism:</h3>
+    <div class="radio-button">
+        <input type="radio" name="mechanism" value="Arm" id="arm-mechanism">
+        <label for="arm-mechanism">Arm</label>
     </div>
+    <div class="radio-button">
+        <input type="radio" name="mechanism" value="Elevator" id="elevator-mechanism">
+        <label for="elevator-mechanism">Elevator</label>
+    </div>
+    <div class="other-mechanism-container">
+        <label for="other-mechanism">Others:</label>
+        <input type="text" id="other-mechanism" class="gear-ratio-input" 
+               placeholder="Enter other mechanism">
+    </div>
+</div>
+
+<script>
+function handleMechanismInteraction() {
+        const otherInput = document.getElementById('other-mechanism');
+        const armRadio = document.getElementById('arm-mechanism');
+        const elevatorRadio = document.getElementById('elevator-mechanism');
+
+        // When typing in other mechanism
+        otherInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                armRadio.checked = false;
+                elevatorRadio.checked = false;
+                localStorage.removeItem('mechanism');
+                localStorage.setItem('otherMechanism', this.value.trim());
+            }
+        });
+
+        // When selecting radio buttons
+        [armRadio, elevatorRadio].forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    otherInput.value = '';
+                    localStorage.removeItem('otherMechanism');
+                }
+            });
+        });
+    }
+
+    
+</script>
 
     
     <div class="intake-container">
@@ -660,10 +713,13 @@ select {
                 document.getElementById("gear-ratio-1").value = localStorage.getItem("gearRatio1") || 'L1';
                 document.getElementById("gear-ratio-2").value = localStorage.getItem("gearRatio2") || 'L1';
     
-                const mechanism = localStorage.getItem("mechanism");
-                if (mechanism) {
-                    document.querySelector(`input[name="mechanism"][value="${mechanism}"]`).checked = true;
-                }
+                const otherMechanism = localStorage.getItem('otherMechanism');
+        if (otherMechanism) {
+            document.getElementById('other-mechanism').value = otherMechanism;
+            document.getElementById('arm-mechanism').checked = false;
+            document.getElementById('elevator-mechanism').checked = false;
+        }
+    }
     
                 const intake = localStorage.getItem("intake");
                 if (intake) {
@@ -706,6 +762,7 @@ select {
             };
 
             window.addEventListener("beforeunload", saveFormData);
+        document.addEventListener('DOMContentLoaded', handleMechanismInteraction);
 
        
 
