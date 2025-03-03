@@ -77,10 +77,13 @@
         const confidence = urlParams.get('confidence') || 'N/A';
         const reefCapability = urlParams.get('reefCapability') || 'N/A';
         const visionType = urlParams.get('visionType') || 'N/A';
+        const weight = urlParams.get('weight') || 'N/A';
+        const dimensions = urlParams.get('dimensions') || 'N/A';
         const gearRatio1 = urlParams.get('gearRatio1') || 'N/A';
         const gearRatio2 = urlParams.get('gearRatio2') || 'N/A';
         const algaeCapability = urlParams.get('algaeCapability') || 'N/A';
         const preload = urlParams.get('preload') || 'N/A';
+        
 
  
         console.log("Scouter Name:", scouterName);
@@ -101,7 +104,7 @@
         console.log("PreLoad:", preload);
 
 
-        const data = `Scouter Name: ${scouterName}, Team Number: ${teamNumber}, Chassis: ${driveType}, Gear Ratio: ${gearRatio1}:${gearRatio2}, Mechanism: ${mechanism}, Intake: ${intake}, Algae Capability: ${algaeCapability}, Reef Capability: ${reefCapability}, PreLoad: ${preload}, Vision Type: ${visionType}, Hang: ${hang}, Is Human Confident in Scoring Algae: ${confidence}, Driver Experience: ${driverExperience}`;
+        const data = `Scouter Name: ${scouterName}, Team Number: ${teamNumber}, Chassis: ${driveType}, Gear Ratio: ${gearRatio1}:${gearRatio2}, Mechanism: ${mechanism}, Intake: ${intake}, Algae Capability: ${algaeCapability}, Reef Capability: ${reefCapability}, PreLoad: ${preload}, Vision Type: ${visionType}, Weight: ${weight}, Dimension: ${dimensions}, Is Human Confident in Scoring Algae: ${confidence}, Driver Experience: ${driverExperience}`;
 
         const qr = new QRious({
             element: document.getElementById('qr-code'),
