@@ -233,7 +233,7 @@ select {
         <input type="text" id="scouter-name" class="info-input" value="" readonly>
 
         <label for="team-number">Team Number:</label>
-        <input type="number" id="team-number" class="info-input" value="1234" readonly>
+        <input type="number" id="team-number" class="info-input" required>
 
         
     </div>
@@ -708,10 +708,12 @@ function saveFormData() {
 
 function loadFormData() {
     const savedData = JSON.parse(localStorage.getItem("formData") || "{}");
+     const teamNumber = localStorage.getItem("teamNumber") || savedData.teamNumber || '';
 
     // Load basic fields
     document.getElementById("scouter-name").value = savedData.scouterName || '';
-    document.getElementById("team-number").value = savedData.teamNumber || '';
+    document.getElementById("team-number").value = teamNumber;
+
     document.getElementById("gear-ratio-1").value = savedData.gearRatio1 || 'L1';
     document.getElementById("gear-ratio-2").value = savedData.gearRatio2 || 'L1';
     document.getElementById("driver-experience").value = savedData.driverExperience || '';
