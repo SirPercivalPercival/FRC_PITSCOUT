@@ -58,51 +58,52 @@
     <button class="green-button" id="go-home">Go back to home page</button>
 
     <script>
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        // Collect all parameters into an object
-        const qrData = {
-            scouterName: urlParams.get('scouterName') || 'N/A',
-            teamNumber: urlParams.get('teamNumber') || 'N/A',
-            matchNumber: urlParams.get('matchNumber') || 'N/A',
-            eventField: urlParams.get('eventField') || 'N/A',
-            driverExperience: urlParams.get('driverExperience') || 'N/A',
-            driveType: urlParams.get('driveType') || 'N/A',
-            mechanism: urlParams.get('mechanism') || 'N/A',
-            intake: urlParams.get('intake') || 'N/A',
-            hang: urlParams.get('hang') || 'N/A',
-            confidence: urlParams.get('confidence') || 'N/A',
-            reefCapability: urlParams.get('reefCapability') || 'N/A',
-            visionType: urlParams.get('visionType') || 'N/A',
-            weight: urlParams.get('weight') || 'N/A',
-            dimensions: urlParams.get('dimensions') || 'N/A',
-            gearRatio1: urlParams.get('gearRatio1') || 'N/A',
-            gearRatio2: urlParams.get('gearRatio2') || 'N/A',
-            algaeCapability: urlParams.get('algaeCapability') || 'N/A',
-            preload: urlParams.get('preload') || 'N/A',
-            timestamp: new Date().toISOString()
-        };
+document.addEventListener("DOMContentLoaded", function() {
+    // Load and decode data
+    const loadData = () => {
+        try {
+            const compressedData = localStorage.getItem("scoutingData");
+            if (!compressedData) throw new Error("No data found");
+            
+            const byteArray = new Uint8Array(JSON.parse(compressedData));
+            const data = msgpack.decode(byteArray);
+            
+            // Update display
+            document.getElementById('team-number').textContent = 
+                `Team Number: ${data.teamNumber || 'N/A'}`;
+            
+            // Generate QR code with full data
+            new QRious({
+                element: document.getElementById('qr-code'),
+                value: JSON.stringify(data),
+                size: 200
+            });
+            
+            // Add to history
+            const history = JSON.parse(localStorage.getItem('qrCodeHistory') || '[]');
+            history.unshift({
+                teamNumber: data.teamNumber,
+                timestamp: data.timestamp,
+                data: JSON.stringify(data)
+            });
+            localStorage.setItem('qrCodeHistory', JSON.stringify(history));
+            
+        } catch (error) {
+            console.error("Error loading data:", error);
+            document.getElementById('team-number').textContent = 
+                "Error: No scouting data found";
+        }
+    };
 
-        // Generate QR code with structured data
-        const qr = new QRious({
-            element: document.getElementById('qr-code'),
-            value: JSON.stringify(qrData),
-            size: 200
-        });
+    // Home button handler
+    document.getElementById('go-home').addEventListener('click', function() {
+        localStorage.removeItem("scoutingData");
+        window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/';
+    });
 
-        // Display team number
-        document.getElementById('team-number').textContent = `Team Number: ${qrData.teamNumber}`;
-
-        // Save to history
-        const qrCodeHistory = JSON.parse(localStorage.getItem('qrCodeHistory')) || [];
-        qrCodeHistory.unshift(qrData);
-        localStorage.setItem('qrCodeHistory', JSON.stringify(qrCodeHistory));
-
-        // Home button handler
-        document.getElementById('go-home').addEventListener('click', function() {
-            window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/'; 
-        });
-    </script>
+    // Initial load
+    loadData();
+});
+</script>
 </body>
 </html>
