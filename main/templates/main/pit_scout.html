@@ -781,51 +781,51 @@ window.addEventListener('beforeunload', saveFormData);
 
     <script>
 function collectData() {
-    // Collect all form data
+    // Collect all data points properly
     const formData = {
         scouterName: document.getElementById("scouter-name").value,
         teamNumber: document.getElementById("team-number").value,
-        
-        driveType: document.querySelector('input[name="driveType"]:checked')?.value,
-        gearRatio: document.getElementById("gear-ratio-1").value + ":" + 
-                 document.getElementById("gear-ratio-2").value,
-        mechanism: document.querySelector('input[name="mechanism"]:checked')?.value ||
-                 document.getElementById("other-mechanism").value,
-        intake: document.querySelector('input[name="Intake"]:checked')?.value,
+        driveType: document.querySelector('input[name="driveType"]:checked')?.value || "N/A",
+        gearRatio: `${document.getElementById("gear-ratio-1").value}:${document.getElementById("gear-ratio-2").value}`,
+        mechanism: document.querySelector('input[name="mechanism"]:checked')?.value || 
+                 document.getElementById("other-mechanism").value || "N/A",
+        intake: document.querySelector('input[name="Intake"]:checked')?.value || "N/A",
         algaeCapability: Array.from(document.querySelectorAll('input[name="algaeCapability"]:checked'))
-                           .map(el => el.value),
+                        .map(el => el.value).join(", ") || "N/A",
         reefCapability: Array.from(document.querySelectorAll('input[name="reefCapability"]:checked'))
-                          .map(el => el.value),
+                         .map(el => el.value).join(", ") || "N/A",
         preload: Array.from(document.querySelectorAll('input[name="preload"]:checked'))
-                   .map(el => el.value),
-        hang: document.querySelector('input[name="Hang"]:checked')?.value,
+                   .map(el => el.value).join(", ") || "N/A",
+        hang: document.querySelector('input[name="Hang"]:checked')?.value || "N/A",
         visionType: Array.from(document.querySelectorAll('input[name="visionType"]:checked'))
-                      .map(el => el.value),
-        weight: document.getElementById("weight-kg").value + "kg/" + 
-              document.getElementById("weight-lbs").value + "lbs",
-        dimensions: document.getElementById("width-input").value + "x" + 
-                  document.getElementById("length-input").value + "in",
-        confidence: document.querySelector('input[name="confidence"]:checked')?.value,
-        driverExperience: document.getElementById("driver-experience").value,
+                      .map(el => el.value).join(", ") || "N/A",
+        weightKg: document.getElementById("weight-kg").value || "N/A",
+        weightLbs: document.getElementById("weight-lbs").value || "N/A",
+        width: document.getElementById("width-input").value || "N/A",
+        length: document.getElementById("length-input").value || "N/A",
+        confidence: document.querySelector('input[name="confidence"]:checked')?.value || "N/A",
+        driverExperience: document.getElementById("driver-experience").value || "N/A",
         timestamp: new Date().toISOString()
     };
 
-    // Encode and store data
-    const encoded = msgpack.encode(formData);
-    localStorage.setItem("scoutingData", JSON.stringify(Array.from(encoded)));
+    // Store as JSON instead of msgpack
+    localStorage.setItem("scoutingData", JSON.stringify(formData));
     
-    // Store team number separately for quick access
-    localStorage.setItem("currentTeamNumber", formData.teamNumber);
+    // Verify storage
+    console.log("Stored Data:", formData);
 }
 
 // Update submit button handler
 document.querySelector('#home-button').addEventListener('click', function(e) {
     e.preventDefault();
-    collectData();
-    window.location.href = this.href;
+    if (document.getElementById("team-number").reportValidity()) {
+        collectData();
+        window.location.href = this.href;
+    } else {
+        alert("Please fill out all required fields!");
+    }
 });
 </script>
-
 
     
     
