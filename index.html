@@ -195,28 +195,30 @@
         window.addEventListener("beforeunload", saveFormData);
 
         d3.select("#pit-scout-button").on("click", function(event) {
-            event.preventDefault(); 
-            const targetUrl = this.href; 
+    event.preventDefault();
+    const targetUrl = this.href;
 
+    // Save form data before navigation
+    saveFormData();
 
-            const scouterName = document.getElementById("scouter-name").value;
-            const teamNumber = document.getElementById("team-number").value;
-        
+    const scouterName = document.getElementById("scouter-name").value;
+    const teamNumber = document.getElementById("team-number").value;
 
-            if (!scouterName || !teamNumber ) {
-                alert("Please fill in all required fields in the INFORMATION section.");
-                return; 
-            }
+    if (!scouterName || !teamNumber) {
+        alert("Please fill in all required fields in the INFORMATION section.");
+        return;
+    }
 
-            d3.select("body")
-                .transition()
-                .duration(500) 
-                .style("opacity", 0) 
-                .on("end", function() {
-                    window.location.href = targetUrl;
-                });
+    d3.select("body")
+        .transition()
+        .duration(500)
+        .style("opacity", 0)
+        .on("end", function() {
+            // Pass team number through localStorage
+            localStorage.setItem("teamNumber", teamNumber);
+            window.location.href = targetUrl;
         });
-
+});
         
     </script>
     <script src="static\js\app.js"></script>
