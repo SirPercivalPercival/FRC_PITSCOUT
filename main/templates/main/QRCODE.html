@@ -125,30 +125,18 @@
 
     <script>
     function loadData() {
-        const compressedData = localStorage.getItem("scoutingData");
-        if (!compressedData) {
-            console.error("No data found.");
-            return;
-        }
-
-        // Convert back from stringified array
-        const byteArray = JSON.parse(compressedData);
-        const data = msgpack.decode(Uint8Array.from(byteArray));
-
-        console.log("Decoded Data:", data);
-
-        // Generate QR code with the structured JSON
-        const qr = new QRious({
-            element: document.getElementById('qr-code'),
-            value: JSON.stringify(data),
-            size: 200
-        });
-
-        document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
-    }
-
-    document.addEventListener("DOMContentLoaded", loadData);
-
+    const compressedData = localStorage.getItem("scoutingData");
+    if (!compressedData) return;
+    const byteArray = JSON.parse(compressedData);
+    const data = msgpack.decode(Uint8Array.from(byteArray));
+    document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
+    new QRious({
+        element: document.getElementById('qr-code'),
+        value: JSON.stringify(data),
+        size: 200
+    });
+}
+document.addEventListener("DOMContentLoaded", loadData);
         
 
 </script>
