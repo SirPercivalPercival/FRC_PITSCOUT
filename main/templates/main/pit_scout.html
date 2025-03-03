@@ -781,7 +781,6 @@ window.addEventListener('beforeunload', saveFormData);
 
     <script>
 function collectData() {
-    // Collect all data points properly
     const formData = {
         scouterName: document.getElementById("scouter-name").value,
         teamNumber: document.getElementById("team-number").value,
@@ -810,11 +809,9 @@ function collectData() {
 
     const compressedData = msgpack.encode(formData);
     localStorage.setItem("scoutingData", JSON.stringify(Array.from(compressedData)));
-    
-    // Verify storage
+    localStorage.setItem("scoutingDataRaw", JSON.stringify(formData)); // Store raw data for debugging
     console.log("Stored Data:", formData);
 }
-
 
 document.querySelector('#submit-button').addEventListener('click', function(e) {
     e.preventDefault();
