@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR CODE</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"></script>
+    <script>
+        // Verify msgpack is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            if(typeof msgpack === 'undefined') {
+                alert('Error: msgpack library failed to load. Please check your internet connection.');
+            }
+        });
+    </script>
     <style>
         body {
             background-color: cyan;
@@ -59,50 +68,54 @@
 
     <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Load and decode data
-    const loadData = () => {
+    // Simple JSON version (recommended)
+    function loadSimpleData() {
         try {
-            const compressedData = localStorage.getItem("scoutingData");
-            if (!compressedData) throw new Error("No data found");
+            const data = JSON.parse(localStorage.getItem("scoutingData") || "{}");
             
-            const byteArray = new Uint8Array(JSON.parse(compressedData));
-            const data = msgpack.decode(byteArray);
-            
-            // Update display
             document.getElementById('team-number').textContent = 
                 `Team Number: ${data.teamNumber || 'N/A'}`;
-            
-            // Generate QR code with full data
+
             new QRious({
                 element: document.getElementById('qr-code'),
                 value: JSON.stringify(data),
                 size: 200
             });
-            
-            // Add to history
-            const history = JSON.parse(localStorage.getItem('qrCodeHistory') || '[]');
-            history.unshift({
-                teamNumber: data.teamNumber,
-                timestamp: data.timestamp,
-                data: JSON.stringify(data)
-            });
-            localStorage.setItem('qrCodeHistory', JSON.stringify(history));
-            
         } catch (error) {
-            console.error("Error loading data:", error);
+            console.error("Error:", error);
             document.getElementById('team-number').textContent = 
-                "Error: No scouting data found";
+                "Error loading data";
         }
-    };
+    }
 
-    // Home button handler
-    document.getElementById('go-home').addEventListener('click', function() {
-        localStorage.removeItem("scoutingData");
+    // Msgpack version (if you need compression)
+    function loadMsgpackData() {
+        try {
+            const compressed = localStorage.getItem("scoutingData");
+            if (!compressed) throw new Error("No data found");
+            
+            const decoded = msgpack.decode(new Uint8Array(JSON.parse(compressed)));
+            
+            document.getElementById('team-number').textContent = 
+                `Team Number: ${decoded.teamNumber || 'N/A'}`;
+
+            new QRious({
+                element: document.getElementById('qr-code'),
+                value: JSON.stringify(decoded),
+                size: 200
+            });
+        } catch (error) {
+            console.error("Msgpack Error:", error);
+            loadSimpleData(); // Fallback to JSON
+        }
+    }
+
+    // Choose one method (recommend using loadSimpleData)
+    loadSimpleData(); // Switch to loadMsgpackData() if you need compression
+
+    document.getElementById('go-home').addEventListener('click', () => {
         window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/';
     });
-
-    // Initial load
-    loadData();
 });
 </script>
 </body>
