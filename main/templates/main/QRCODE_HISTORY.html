@@ -108,20 +108,24 @@
     const historyContainer = document.getElementById('qr-code-history');
 
     function renderQRCodeHistory() {
+    const history = JSON.parse(localStorage.getItem('qrCodeHistory')) || [];
     historyContainer.innerHTML = '';
 
-    qrCodeHistory.forEach((entry, index) => {
-        const uniqueID = `${entry.teamNumber}-${entry.timestamp || index}`;
-
+    history.forEach((entry, index) => {
         const qrItem = document.createElement('div');
         qrItem.classList.add('qr-item');
 
+        // Generate QR code from stored data
         const qrCanvas = document.createElement('canvas');
         new QRious({
             element: qrCanvas,
-            value: entry.data,
+            value: JSON.stringify(entry),
             size: 150
         });
+
+        // Display team number
+        const label = document.createElement('p');
+        label.textContent = `Team ${entry.teamNumber} - Match ${entry.matchNumber}`;
 
         
         let teamNumberText = "Unknown Team";
