@@ -126,9 +126,10 @@
     <script>
     function loadData() {
     const compressedData = localStorage.getItem("scoutingData");
-    if (!compressedData) return;
+    if (!compressedData) return console.error("No compressed data found.");
     const byteArray = JSON.parse(compressedData);
     const data = msgpack.decode(Uint8Array.from(byteArray));
+    console.log("Decoded Data:", data);
     document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
     new QRious({
         element: document.getElementById('qr-code'),
