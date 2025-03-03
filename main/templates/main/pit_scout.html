@@ -11,6 +11,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         .fade-in {
             opacity: 0; 
@@ -18,251 +19,134 @@
         }
 
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: 'Impact', sans-serif;
-            background-color: rgb(0, 217, 255);
-            color: black;
-            position: relative;
-            padding: 20px;
-        }
-        .title {
-            font-size: clamp(32px, 8vw, 48px);
-            margin-top: 20px;
-            text-align: center;
-        }
-        .home-button {
-            font-family: 'Impact', sans-serif;
-            font-size: clamp(24px, 8vw, 32px);
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            text-decoration: none;
-            white-space: nowrap;
-            padding: 15px 30px;
-            margin-bottom: 30px;
-            transition: all 0.3s;
-        }
-        .home-button:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-        }
+        background: linear-gradient(135deg, #e6f7ff 0%, #b3e0ff 100%);
+        color: #2c3e50;
+        font-family: 'Roboto', sans-serif;
+        line-height: 1.6;
+    }
 
-        @media screen and (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-        }
+    .title {
+        color: #2c3e50;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        margin: 30px 0;
+    }
 
-        .fade-in {
-            opacity: 0;
-            transition: opacity 500ms ease-in; 
-        }
-
-        .weight container, .preload-container, .algae-capability-container, .chassis-container, .gear-ratio-container, .vision-container, .hang-container, .reef-capability-container, .confidence-container, .experience-container, .intake-container, .mechanism-container {
-            border: 2px solid black;
-            padding: 5px;
-            width: 400px;
-            margin: 20px auto;
-            display: flex;
-            align-items: center;
-        }
-
-        .weight-container h3, .preload-container h3, .algae-capability-container h3, .chassis-container h3, .gear-ratio-container h3, .vision-container h3, .hang-container h3, .reef-capability-container h3, .confidence-container h3, .experience-container h3, .mechanism-container h3, .intake-container h3{
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 32px;
-            margin-right: 10px;
-        }
-
-        .radio-button label, .gear-ratio-label {
-            font-family: 'Bebas Neue', sans-serif;
-        }
-
-        .weight-container {
-            border: 2px solid black;
-            padding: 20px;
-            margin: 20px auto;
-            width: 600px;
-            box-sizing: border-box;
-        }
-        
-        .weight-inputs {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .weight-inputs label {
-            font-size: 16px;
-        }
-        
-        .weight-inputs input {
-            width: 120px;
-            padding: 5px;
-            font-size: 16px;
-        }
-        
-
-        .radio-button {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            margin: 6px 0;
-            font-size: 18px;
-        }
-
-        .radio-button input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 6px;
-        }
-
-        .gear-ratio-input, .experience-input {
-            margin: 0 10px;
-            width: 60px;
-        }
-
-        .vision-container, .hang-container {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .vision-container {
-            margin-bottom: 40px;
-        }
-
-        .reef-capability-container {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .reef-capability-options {
-            display: flex;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        .reef-capability-option {
-            width: 50%;
-            display: flex;
-            align-items: center;
-        }
-
-        .vision-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .vision-options {
-            display: flex;
-            margin-left: 10px;
-        }
-
-        .hang-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .hang-options {
-            display: flex;
-            margin-left: 10px;
-        }
-
-        .info-container {
-            border: 2px solid black; 
-            padding: 20px; 
-            width: 600px;
-            margin: 20px auto; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-start;
-            box-sizing: border-box; 
-        }
-
-        .info-container h3 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .info-input {
-            margin: 5px 0; 
-            width: 100%; 
-            padding: 10px; 
-            font-size: 16px;
-            box-sizing: border-box; 
-            background-color: #f0f0f0; 
-            border: 1px solid #ccc; 
-            color: #333; 
-        }
-
-        .submit-button {
-            background-color: green;
-            color: white;
-            padding: 20px 40px;
-            font-size: 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            font-family: 'Impact', sans-serif;
-        }
-        .submit-button:hover {
-            background-color: darkgreen; 
-        }
-        .section-label {
-            font-size: 28px; 
-            font-weight: bold; 
-            margin-top: 20px; 
-            margin-bottom: 10px; 
-            color: yellow; 
-            background-color: rgba(0, 0, 0, 0.5); 
-            padding: 10px; 
-            border-radius: 5px; 
-            font-family: 'Impact', sans-serif; 
-        }
-        
-        #gear-ratio-container {
-            display: none; 
-        }
-
-        .mechanism-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px; 
-        }
-
-        .dimensions-container {
-        border: 2px solid black;
-        padding: 20px;
+    .info-container, .chassis-container, .gear-ratio-container, 
+    .mechanism-container, .intake-container, .algae-capability-container,
+    .reef-capability-container, .preload-container, .hang-container,
+    .vision-container, .weight-container, .dimensions-container,
+    .confidence-container, .experience-container {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 25px;
         margin: 20px auto;
-        width: 600px;
-        box-sizing: border-box;
-    }
-    
-    .dimensions-inputs {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-    }
-    
-    .dimensions-inputs label {
-        font-size: 16px;
-    }
-    
-    .dimensions-inputs input {
-        width: 120px;
-        padding: 5px;
-        font-size: 16px;
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    .info-container h3, .chassis-container h3, .gear-ratio-container h3,
+    .mechanism-container h3, .intake-container h3, .algae-capability-container h3,
+    .reef-capability-container h3, .preload-container h3, .hang-container h3,
+    .vision-container h3, .weight-container h3, .dimensions-container h3,
+    .confidence-container h3, .experience-container h3 {
+        color: #2980b9;
+        font-size: 28px;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 8px;
+    }
+
+    .radio-button {
+        padding: 8px 12px;
+        margin: 8px 0;
+        background: rgba(52, 152, 219, 0.1);
+        border-radius: 6px;
+        transition: background 0.3s ease;
+    }
+
+    .radio-button:hover {
+        background: rgba(52, 152, 219, 0.2);
+    }
+
+    input[type="text"], input[type="number"], select {
+        padding: 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    .home-button {
+        background: #3498db;
+        padding: 15px 35px;
+        font-size: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .home-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .dimensions-inputs, .weight-inputs {
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .dimensions-inputs label, .weight-inputs label {
+        font-weight: 500;
+        color: #34495e;
+    }
+
+        .radio-button, .algae-capability-option, .preload-option {
+    padding: 12px 15px;
+    margin: 10px 0;
+    background: rgba(52, 152, 219, 0.08);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 8px;
+}
+
+.info-input {
+    background: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    transition: all 0.2s ease;
+}
+
+.home-button {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.dimensions-inputs input, .weight-inputs input {
+    background: #f8f9fa;
+    padding: 8px 12px;
+}
+
+.container h3 {
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 1px;
+}
+
+select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #f8f9fa;
+}
     </style>
 </head>
 <body class="fade-in">
@@ -542,7 +426,17 @@
             <input type="number" id="weight-lbs" placeholder="Enter weight in lbs" step="0.01" min="0">
         </div>
     </div>
-
+    
+<div class="dimensions-container">
+    <h3>Dimensions of Robot</h3>
+    <div class="dimensions-inputs">
+        <label for="width-input">Width (in):</label>
+        <input type="number" id="width-input" placeholder="Enter width" step="0.01" min="0">
+        
+        <label for="length-input">Length (in):</label>
+        <input type="number" id="length-input" placeholder="Enter length" step="0.01" min="0">
+    </div>
+</div>
 
     <div class="confidence-container">
         <h3>Is Human Confident in scoring algae to net?</h3>
@@ -700,11 +594,15 @@
                 localStorage.setItem("hang", document.querySelector('input[name="Hang"]:checked')?.value || '');
                 localStorage.setItem("confidence", document.querySelector('input[name="confidence"]:checked')?.value || '');
                 localStorage.setItem("driverExperience", document.getElementById("driver-experience").value);
+                localStorage.setItem("width", document.getElementById("width-input").value);
+                localStorage.setItem("length", document.getElementById("length-input").value);
             }
 
             function loadFormData() {
                 document.getElementById("scouter-name").value = localStorage.getItem("scouterName") || '';
                 document.getElementById("team-number").value = localStorage.getItem("teamNumber") || '';
+                document.getElementById("width-input").value = localStorage.getItem("width") || '';
+                document.getElementById("length-input").value = localStorage.getItem("length") || '';
                 
 
                 const driveType = localStorage.getItem("driveType");
@@ -762,67 +660,9 @@
 
             window.addEventListener("beforeunload", saveFormData);
 
-        <div class="dimensions-container">
-    <h3>Dimensions of Robot</h3>
-    <div class="dimensions-inputs">
-        <label for="width-input">Width (in):</label>
-        <input type="number" id="width-input" placeholder="Enter width" step="0.01" min="0">
-        
-        <label for="length-input">Length (in):</label>
-        <input type="number" id="length-input" placeholder="Enter length" step="0.01" min="0">
-    </div>
-</div>
+       
 
-<!-- Add this JavaScript -->
-<script>
-    // Save dimensions to localStorage
-    function saveDimensions() {
-        const width = document.getElementById('width-input').value;
-        const length = document.getElementById('length-input').value;
-        
-        localStorage.setItem('robotWidth', width);
-        localStorage.setItem('robotLength', length);
-    }
-
-    // Load dimensions from localStorage
-    function loadDimensions() {
-        const savedWidth = localStorage.getItem('robotWidth');
-        const savedLength = localStorage.getItem('robotLength');
-        
-        if (savedWidth) document.getElementById('width-input').value = savedWidth;
-        if (savedLength) document.getElementById('length-input').value = savedLength;
-    }
-
-    // Event listeners
-    document.getElementById('width-input').addEventListener('input', saveDimensions);
-    document.getElementById('length-input').addEventListener('input', saveDimensions);
-    document.addEventListener('DOMContentLoaded', loadDimensions);
-
-    // Add to existing saveFormData function
-    function saveFormData() {
-        // Existing code...
-        localStorage.setItem("width", document.getElementById("width-input").value);
-        localStorage.setItem("length", document.getElementById("length-input").value);
-    }
-
-    // Add to existing loadFormData function
-    function loadFormData() {
-        // Existing code...
-        document.getElementById("width-input").value = localStorage.getItem("width") || '';
-        document.getElementById("length-input").value = localStorage.getItem("length") || '';
-    }
-
-    // Update collectData function
-    function collectData() {
-        const data = {
-            // Existing properties...
-            dimensions: {
-                width: document.getElementById("width-input").value || "N/A",
-                length: document.getElementById("length-input").value || "N/A"
-            }
-        };
-        
-    }
+    
 </script>
 
         
@@ -855,6 +695,10 @@
             weight: {
                 kg: document.getElementById("weight-kg")?.value || "N/A",
                 lbs: document.getElementById("weight-lbs")?.value || "N/A"
+            },
+            dimensions: {
+                width: document.getElementById("width-input").value || "N/A",
+                length: document.getElementById("length-input").value || "N/A"
             }
         };
 
