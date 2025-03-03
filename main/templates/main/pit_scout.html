@@ -808,23 +808,20 @@ function collectData() {
         timestamp: new Date().toISOString()
     };
 
-    // Store as JSON instead of msgpack
-    localStorage.setItem("scoutingData", JSON.stringify(formData));
+    const compressedData = msgpack.encode(formData);
+    localStorage.setItem("scoutingData", JSON.stringify(Array.from(compressedData)));
     
     // Verify storage
     console.log("Stored Data:", formData);
 }
 
-// Update submit button handler
-document.querySelector('#home-button').addEventListener('click', function(e) {
+
+document.querySelector('#submit-button').addEventListener('click', function(e) {
     e.preventDefault();
-    if (document.getElementById("team-number").reportValidity()) {
-        collectData();
-        window.location.href = this.href;
-    } else {
-        alert("Please fill out all required fields!");
-    }
+    collectData();
+    window.location.href = "https://sirpercivalpercival.github.io/FRC_PITSCOUT/main/templates/main/QRCODE.html";
 });
+
 </script>
 
     
