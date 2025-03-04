@@ -75,58 +75,59 @@
     <button class="green-button" onclick="location.assign('https://sirpercivalpercival.github.io/FRC_PITSCOUT/');">Go back to home page</button>
 
     <script>
-    function getStoredData() {
-        const storedData = localStorage.getItem('qrCodeHistory');
-        if (!storedData) return [];
-        try {
-            const decodedData = msgpack.decode(Uint8Array.from(JSON.parse(storedData)));
-            return Array.isArray(decodedData) ? decodedData : [];
-        } catch (e) {
-            console.error("Error retrieving QR Code history:", e);
-            return [];
-        }
-    }
-
-    function saveStoredData(data) {
-        if (!Array.isArray(data)) {
-            console.error("Attempted to save non-array data to qrCodeHistory.");
-            return;
-        }
-        const compressedData = JSON.stringify(Array.from(msgpack.encode(data)));
-        localStorage.setItem("qrCodeHistory", compressedData);
-    }
-
-    function renderQRCodeHistory() {
-    const history = JSON.parse(localStorage.getItem('qrCodeHistory') || [];
+function renderQRCodeHistory() {
+    const history = JSON.parse(localStorage.getItem('qrCodeHistory') || '[]');
     const container = document.getElementById('qr-code-history');
     container.innerHTML = '';
-    
+
     history.forEach((entry, index) => {
         const qrItem = document.createElement('div');
         qrItem.classList.add('qr-item');
         
+        // QR Code Canvas
         const qrCanvas = document.createElement('canvas');
-        new QRious({ element: qrCanvas, value: JSON.stringify(entry), size: 150 });
-        
-        const label = document.createElement('p');
-        label.textContent = `Team ${entry.teamNumber} - ${new Date(entry.timestamp).toLocaleString()}`;
-            const deleteButton = document.createElement('button');
-            deleteButton.classList.add('delete-button');
-            deleteButton.textContent = 'Delete QR Code';
-            deleteButton.addEventListener('click', () => {
-                if (confirm("Are you sure you want to delete this QR code?")) {
-                    history.splice(index, 1);
-                    saveStoredData(history);
-                    renderQRCodeHistory();
-                }
-            });
-            qrItem.appendChild(qrCanvas);
-            qrItem.appendChild(label);
-            qrItem.appendChild(deleteButton);
-            container.appendChild(qrItem);
+        new QRious({ 
+            element: qrCanvas, 
+            value: JSON.stringify(entry), 
+            size: 150 
         });
-    }
-    document.addEventListener("DOMContentLoaded", renderQRCodeHistory);
-    </script>
+
+        // Team Number Label
+        const teamLabel = document.createElement('p');
+        teamLabel.classList.add('team-number');
+        teamLabel.textContent = `Team: ${entry.teamNumber || 'Unknown'}`;
+
+        // Timestamp
+        const timeLabel = document.createElement('p');
+        timeLabel.textContent = new Date(entry.timestamp).toLocaleString();
+
+        // Delete Button
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = () => {
+            history.splice(index, 1);
+            localStorage.setItem('qrCodeHistory', JSON.stringify(history));
+            renderQRCodeHistory();
+        };
+
+        qrItem.appendChild(qrCanvas);
+        qrItem.appendChild(teamLabel);
+        qrItem.appendChild(timeLabel);
+        qrItem.appendChild(deleteButton);
+        container.appendChild(qrItem);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Initialize history display
+    renderQRCodeHistory();
+    
+    // Add click handler for home button
+    document.querySelector('.green-button').addEventListener('click', () => {
+        window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/';
+    });
+});
+</script>
 </body>
 </html>
