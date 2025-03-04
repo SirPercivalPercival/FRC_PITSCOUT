@@ -808,9 +808,9 @@ function collectData() {
 }
 
 document.getElementById('submit-button').addEventListener('click', function(e) {
-    e.preventDefault();
-    collectData();
-    window.location.href = "https://sirpercivalpercival.github.io/FRC_PITSCOUT/main/templates/main/QRCODE.html";
+  e.preventDefault();
+  collectData();
+  window.location.href = "main/templates/main/QRCODE.html"; // Fixed path
 });
 </script>
 
