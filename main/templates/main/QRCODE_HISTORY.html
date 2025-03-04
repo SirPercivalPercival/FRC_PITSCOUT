@@ -96,16 +96,19 @@
     }
 
     function renderQRCodeHistory() {
-        const history = getStoredData();
-        const container = document.getElementById('qr-code-history');
-        container.innerHTML = '';
-        history.forEach((entry, index) => {
-            const qrItem = document.createElement('div');
-            qrItem.classList.add('qr-item');
-            const qrCanvas = document.createElement('canvas');
-            new QRious({ element: qrCanvas, value: JSON.stringify(entry), size: 150 });
-            const label = document.createElement('p');
-            label.textContent = `Team Number: ${entry.teamNumber || 'Unknown'}`;
+    const history = JSON.parse(localStorage.getItem('qrCodeHistory') || [];
+    const container = document.getElementById('qr-code-history');
+    container.innerHTML = '';
+    
+    history.forEach((entry, index) => {
+        const qrItem = document.createElement('div');
+        qrItem.classList.add('qr-item');
+        
+        const qrCanvas = document.createElement('canvas');
+        new QRious({ element: qrCanvas, value: JSON.stringify(entry), size: 150 });
+        
+        const label = document.createElement('p');
+        label.textContent = `Team ${entry.teamNumber} - ${new Date(entry.timestamp).toLocaleString()}`;
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('delete-button');
             deleteButton.textContent = 'Delete QR Code';
