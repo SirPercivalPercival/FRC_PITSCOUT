@@ -535,7 +535,7 @@ function handleMechanismInteraction() {
         <input type="number" id="length-input" placeholder="Enter length" step="0.01" min="0">
     </label>
 </div>
-
+<!-----
     <div class="confidence-container">
         <h3>Is Human Confident in scoring algae to net?</h3>
         <label class="radio-button">
@@ -547,7 +547,7 @@ function handleMechanismInteraction() {
             <label for="confidence-no">No</label>
         </label>
     </div>
-
+---->
 
     <div class="experience-container">
         <h3>Driver Experience (Year):</h3>
@@ -688,7 +688,7 @@ function saveFormData() {
         intake: document.querySelector('input[name="Intake"]:checked')?.value || '',
         reefCapability: Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value),
         visionType: Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value),
-        hang: document.querySelector('input[name="Hang"]:checked')?.value || '',
+        hangCapability: document.querySelector('input[name="Hang"]:checked')?.value || '',
         confidence: document.querySelector('input[name="confidence"]:checked')?.value || '',
         driverExperience: document.getElementById("driver-experience").value,
         weightKg: document.getElementById("weight-kg").value,
@@ -792,13 +792,12 @@ function collectData() {
         algaeCapability: Array.from(document.querySelectorAll('input[name="algaeCapability"]:checked')).map(el => el.value).join(", ") || "N/A",
         reefCapability: Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value).join(", ") || "N/A",
         preload: Array.from(document.querySelectorAll('input[name="preload"]:checked')).map(el => el.value).join(", ") || "N/A",
-        hang: document.querySelector('input[name="Hang"]:checked')?.value || "N/A",
+        hangCapability: document.querySelector('input[name="Hang"]:checked')?.value || "N/A",
         visionType: Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value).join(", ") || "N/A",
         weightKg: document.getElementById("weight-kg").value || "N/A",
         weightLbs: document.getElementById("weight-lbs").value || "N/A",
         width: document.getElementById("width-input").value || "N/A",
         length: document.getElementById("length-input").value || "N/A",
-        confidence: document.querySelector('input[name="confidence"]:checked')?.value || "N/A",
         driverExperience: document.getElementById("driver-experience").value || "N/A",
         timestamp: new Date().toISOString()
     };
