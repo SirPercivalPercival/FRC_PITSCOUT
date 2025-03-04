@@ -563,7 +563,7 @@ function handleMechanismInteraction() {
 
    
 
-    <a id="home-button" href="https://sirpercivalpercival.github.io/FRC_PITSCOUT/main/templates/main/QRCODE.html" class="home-button">Submit</a>
+    <button id="submit-button" class="home-button">Submit</button>
 
     <script>
 
@@ -782,22 +782,17 @@ window.addEventListener('beforeunload', saveFormData);
     <script>
 function collectData() {
     const formData = {
-        scouterName: document.getElementById("scouter-name").value,
-        teamNumber: document.getElementById("team-number").value,
+        scouterName: document.getElementById("scouter-name").value || "N/A",
+        teamNumber: document.getElementById("team-number").value || "N/A",
         driveType: document.querySelector('input[name="driveType"]:checked')?.value || "N/A",
-        gearRatio: `${document.getElementById("gear-ratio-1").value}:${document.getElementById("gear-ratio-2").value}`,
-        mechanism: document.querySelector('input[name="mechanism"]:checked')?.value || 
-                 document.getElementById("other-mechanism").value || "N/A",
+        gearRatio: `${document.getElementById("gear-ratio-1").value || "N/A"}:${document.getElementById("gear-ratio-2").value || "N/A"}`,
+        mechanism: document.querySelector('input[name="mechanism"]:checked')?.value || document.getElementById("other-mechanism").value || "N/A",
         intake: document.querySelector('input[name="Intake"]:checked')?.value || "N/A",
-        algaeCapability: Array.from(document.querySelectorAll('input[name="algaeCapability"]:checked'))
-                        .map(el => el.value).join(", ") || "N/A",
-        reefCapability: Array.from(document.querySelectorAll('input[name="reefCapability"]:checked'))
-                         .map(el => el.value).join(", ") || "N/A",
-        preload: Array.from(document.querySelectorAll('input[name="preload"]:checked'))
-                   .map(el => el.value).join(", ") || "N/A",
+        algaeCapability: Array.from(document.querySelectorAll('input[name="algaeCapability"]:checked')).map(el => el.value).join(", ") || "N/A",
+        reefCapability: Array.from(document.querySelectorAll('input[name="reefCapability"]:checked')).map(el => el.value).join(", ") || "N/A",
+        preload: Array.from(document.querySelectorAll('input[name="preload"]:checked')).map(el => el.value).join(", ") || "N/A",
         hang: document.querySelector('input[name="Hang"]:checked')?.value || "N/A",
-        visionType: Array.from(document.querySelectorAll('input[name="visionType"]:checked'))
-                      .map(el => el.value).join(", ") || "N/A",
+        visionType: Array.from(document.querySelectorAll('input[name="visionType"]:checked')).map(el => el.value).join(", ") || "N/A",
         weightKg: document.getElementById("weight-kg").value || "N/A",
         weightLbs: document.getElementById("weight-lbs").value || "N/A",
         width: document.getElementById("width-input").value || "N/A",
@@ -807,18 +802,16 @@ function collectData() {
         timestamp: new Date().toISOString()
     };
 
-    const compressedData = msgpack.encode(formData);
-    localStorage.setItem("scoutingData", JSON.stringify(Array.from(compressedData)));
-    localStorage.setItem("scoutingDataRaw", JSON.stringify(formData)); // Store raw data for debugging
-    console.log("Stored Data:", formData);
+    // Save to localStorage
+    localStorage.setItem("scoutingData", JSON.stringify(formData));
+    console.log("Data Saved:", formData);
 }
 
-document.querySelector('#submit-button').addEventListener('click', function(e) {
+document.getElementById('submit-button').addEventListener('click', function(e) {
     e.preventDefault();
     collectData();
     window.location.href = "https://sirpercivalpercival.github.io/FRC_PITSCOUT/main/templates/main/QRCODE.html";
 });
-
 </script>
 
     
