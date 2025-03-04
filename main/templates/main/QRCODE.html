@@ -61,26 +61,29 @@
 
     <script>
     function loadData() {
-        const compressedData = localStorage.getItem("scoutingData");
-        if (!compressedData) {
-            console.error("No compressed data found.");
-            return;
-        }
-        const byteArray = JSON.parse(compressedData);
-        const data = msgpack.decode(Uint8Array.from(byteArray));
-        console.log("Decoded Data:", data);
-        document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
-        new QRious({
-            element: document.getElementById('qr-code'),
-            value: JSON.stringify(data),
-            size: 200
-        });
+    const rawData = localStorage.getItem("scoutingData");
+    if (!rawData) {
+        console.error("No data found.");
+        return;
     }
-    document.addEventListener("DOMContentLoaded", loadData);
-
-    document.getElementById('go-home').addEventListener('click', function() {
-        window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/'; 
+    const data = JSON.parse(rawData);
+    console.log("Data Loaded:", data);
+    
+    // Update the team number display
+    document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
+    
+    // Generate QR Code
+    new QRious({
+        element: document.getElementById('qr-code'),
+        value: JSON.stringify(data),
+        size: 200
     });
+
+    // Add to history
+    const history = JSON.parse(localStorage.getItem('qrCodeHistory') || '[]');
+    history.push(data);
+    localStorage.setItem('qrCodeHistory', JSON.stringify(history));
+}
     </script>
 </body>
 </html>
