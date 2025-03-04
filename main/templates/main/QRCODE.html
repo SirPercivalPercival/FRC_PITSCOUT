@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR CODE</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"></script>
+    
 
     <style>
         body {
@@ -60,30 +60,42 @@
     <button class="green-button" onclick="location.assign('https://sirpercivalpercival.github.io/FRC_PITSCOUT/');">Go back to home page</button>
 
     <script>
-    function loadData() {
+function loadData() {
     const rawData = localStorage.getItem("scoutingData");
     if (!rawData) {
-        console.error("No data found.");
+        alert("No scouting data found!");
         return;
     }
-    const data = JSON.parse(rawData);
-    console.log("Data Loaded:", data);
-    
-    // Update the team number display
-    document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
-    
-    // Generate QR Code
-    new QRious({
-        element: document.getElementById('qr-code'),
-        value: JSON.stringify(data),
-        size: 200
-    });
 
-    // Add to history
-    const history = JSON.parse(localStorage.getItem('qrCodeHistory') || '[]');
-    history.push(data);
-    localStorage.setItem('qrCodeHistory', JSON.stringify(history));
+    try {
+        const data = JSON.parse(rawData);
+        
+        // Generate QR Code
+        new QRious({
+            element: document.getElementById('qr-code'),
+            value: JSON.stringify(data),
+            size: 200
+        });
+
+        // Display team number
+        document.getElementById('team-number').textContent = `Team Number: ${data.teamNumber}`;
+
+        // Add to history
+        const history = JSON.parse(localStorage.getItem('qrCodeHistory') || '[]');
+        history.push(data);
+        localStorage.setItem('qrCodeHistory', JSON.stringify(history));
+
+    } catch (error) {
+        console.error("Error loading data:", error);
+        alert("Error loading scouting data!");
+    }
 }
-    </script>
+
+document.addEventListener("DOMContentLoaded", loadData);
+
+document.getElementById('go-home').addEventListener('click', function() {
+    window.location.href = 'https://sirpercivalpercival.github.io/FRC_PITSCOUT/';
+});
+</script>
 </body>
 </html>
